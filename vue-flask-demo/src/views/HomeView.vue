@@ -2,34 +2,35 @@
   <div style="padding: 10px">
     <!--    <img alt="Vue logo" src="../assets/logo.png">-->
     <!--    <HelloWorld msg="Welcome to Your Vue.js App"/>-->
-    <div style="margin: 10px 0;font-weight: bold; color:#79bbff;font-size: large">
+    <div style="margin: 10px 0;font-weight: bolder; color:#79bbff;font-size: large">
       Welcome to Question Bank :)
     </div>
     <!--    upload-->
     <div style="margin: 10px 0">
       <el-button type="primary" round size="large" @click="addQuestion">Upload Question
         <el-icon class="el-icon--right">
-          <Upload />
+          <Upload/>
         </el-icon>
       </el-button>
     </div>
     <!--    search-->
     <div style="margin: 10px 0">
-      <el-input v-model="search" placeholder="Keywords" style="width: 25%" />
+      <el-input v-model="search" placeholder="Keywords" style="width: 25%"/>
       <el-button type="primary" style="margin-left: 5px" plain>
         <el-icon class="el-icon--left">
-          <Search />
+          <Search/>
         </el-icon>
         Search
       </el-button>
-      <span style="margin-left: 5px; color: #409eff">
-        Here are questions we already have!
+      <span style="margin-left: 5px; color: #6db1f8; font-weight: bold  ">
+
+        Your questions are following:
       </span>
     </div>
     <!--    table-->
-    <el-table :data="tableData" max-height="auto" stripe style="max-width: calc(100vw - 20px)">
-      <el-table-column prop="ID" label="ID" sortable />
-      <el-table-column prop="question" label="Question" />
+    <el-table :data="tableData" max-height="450" stripe :table-layout="'auto'">
+      <el-table-column prop="ID" label="ID" sortable width="auto"/>
+      <el-table-column prop="question" label="Question"/>
       <el-table-column prop="type" label="Type" :filters="[
         { text: 'filling', value: 'filling' },
         { text: 'single choice', value: 'single choice' },
@@ -43,25 +44,54 @@
       </el-table-column>
       <el-table-column fixed="right" label="Operations" width="fixed">
         <template #default>
-          <el-button plain type="primary" size="small" @click="handleDetail">Detail</el-button>
-          <el-button plain size="small">Edit</el-button>
-          <el-button plain type="danger"  size="small" @click="handleDetail"
-          >Delete</el-button
-          >
+          <el-button-group class="ml-4">
+            <el-button plain type="primary" size="small" :icon="'Edit'"  @click="handleEdit"/>
+            <el-popconfirm title="Are you sure to delete this?" @confirm="handleDelete">
+              <template #reference>
+                <el-button plain type="danger" size="small"
+                >
+                  <el-icon>
+                    <Delete/>
+                  </el-icon>
+                </el-button>
+
+              </template>
+            </el-popconfirm>
+          </el-button-group>
         </template>
       </el-table-column>
     </el-table>
-    <div style="margin:10px 0">
-      <el-pagination :currentPage="currentPage" :page-size="pageSize" :page-sizes="[5, 10, 15]" :small="small"
-        layout="total, sizes, prev, pager, next, jumper" :total="totalPage" @size-change="handleSizeChange"
-        @current-change="handleCurrentChange" />
+    <!--    pages-->
+    <div style="margin: 10px">
+      <el-row :gutter="20">
+        <el-col :span="20">
+          <div>
+            <el-pagination :currentPage="currentPage" :page-size="pageSize" :page-sizes="[5, 10, 15]" :small="small"
+                           layout="total, sizes, prev, pager, next, jumper" :total="totalPage"
+                           @size-change="handleSizeChange"
+                           @current-change="handleCurrentChange"/>
+          </div>
+        </el-col>
+        <el-col :span="4">
+          <div>
+            <el-button type="primary" size="default">
+              submit
+              <el-icon class="el-icon--right">
+                <Check/>
+              </el-icon>
+            </el-button>
+          </div>
+        </el-col>
+      </el-row>
     </div>
+
+
     <!--    弹窗-上传问题-->
     <el-dialog v-model="dialogVisibleUpload" title="Upload question file" width="70%" :before-close="handleClose">
       <el-upload class="upload-demo" drag action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
-        multiple>
+                 multiple>
         <el-icon class="el-icon--upload">
-          <upload-filled />
+          <upload-filled/>
         </el-icon>
         <div class="el-upload__text">
           Drop file here or <em>click to upload</em>
@@ -75,57 +105,61 @@
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="dialogVisibleUpload = false">Cancel</el-button>
-          <el-button type="primary" @click="dialogVisibleUpload = false; dialogVisibleConfirm = true">
+          <el-button type="primary" @click="handleEditConfirm">
             Upload
             <el-icon class="el-icon--right">
-              <Upload />
+              <Upload/>
             </el-icon>
           </el-button>
         </span>
       </template>
     </el-dialog>
-    <!--    弹窗-确认问题-->
-    <el-dialog v-model="dialogVisibleConfirm" title="Confirm your question" width="70%" :before-close="handleClose">
-      <el-form :model="formConfirmQuestion" label-width="150px">
-        <el-form-item label="Question description">
-          <el-input v-model="formConfirmQuestion.question" />
+    <!--    弹窗-编辑问题-->
+    <el-dialog v-model="dialogVisibleEdit" title="Confirm your question" width="70%" :before-close="handleCloseEdit">
+      <el-form
+          :model="formConfirmQuestion"
+          :label-position="'left'"
+          label-width="150px">
+        <el-form-item label="Question">
+          <el-input v-model="formConfirmQuestion.question"/>
         </el-form-item>
-        <el-form-item label="Question type">
+        <el-form-item label="detail">
+          <el-input v-model="formConfirmQuestion.detail" type="textarea"/>
+        </el-form-item>
+        <el-form-item label="type">
           <el-select v-model="formConfirmQuestion.type" placeholder="please select type">
-            <el-option label="filling" value="filling" />
-            <el-option label="single choice" value="single choice" />
-            <el-option label="multiple choice" value="multiple choice" />
+            <el-option label="filling" value="filling"/>
+            <el-option label="single choice" value="single choice"/>
+            <el-option label="multiple choice" value="multiple choice"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="Activity type">
-          <el-checkbox-group v-model="formConfirmQuestion.type">
-            <el-checkbox label="Online activities" name="type" />
-            <el-checkbox label="Promotion activities" name="type" />
-            <el-checkbox label="Offline activities" name="type" />
-            <el-checkbox label="Simple brand exposure" name="type" />
+        <el-form-item label="Answer(multiple choice)">
+          <el-checkbox-group v-model="formConfirmQuestion.ansMulti">
+            <el-checkbox label="A" name="type"/>
+            <el-checkbox label="B" name="type"/>
+            <el-checkbox label="C" name="type"/>
+            <el-checkbox label="D" name="type"/>
           </el-checkbox-group>
         </el-form-item>
-        <el-form-item label="Resources">
-          <el-radio-group v-model="formConfirmQuestion.resource">
-            <el-radio label="Sponsor" />
-            <el-radio label="Venue" />
+        <el-form-item label="Answer(single choice)">
+          <el-radio-group v-model="formConfirmQuestion.ansSingle">
+            <el-radio label="A"/>
+            <el-radio label="B"/>
+            <el-radio label="C"/>
+            <el-radio label="D"/>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="Activity form">
-          <el-input v-model="formConfirmQuestion.desc" type="textarea" />
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="onSubmit">Create</el-button>
-          <el-button>Cancel</el-button>
+        <el-form-item label="Answer(filling)">
+          <el-input v-model="formConfirmQuestion.ansFilling" type="textarea"/>
         </el-form-item>
       </el-form>
       <template #footer>
         <span class="dialog-footer">
-          <el-button @click="dialogVisibleConfirm = false">Cancel</el-button>
-          <el-button type="primary" @click="dialogVisibleConfirm = false">
+          <el-button @click="dialogVisibleEdit = false">Cancel</el-button>
+          <el-button type="primary" @click="dialogVisibleEdit = false">
             Confirm
             <el-icon class="el-icon--right">
-              <Check />
+              <Check/>
             </el-icon>
           </el-button>
         </span>
@@ -137,8 +171,9 @@
 <script>
 // @ is an alias to /src
 // import HelloWorld from '@/components/HelloWorld.vue'
-import { TableColumnCtx } from 'element-plus/es/components/table/src/table-column/defaults'
-import { UploadFilled } from '@element-plus/icons-vue'
+import {TableColumnCtx} from 'element-plus/es/components/table/src/table-column/defaults'
+import {UploadFilled} from '@element-plus/icons-vue'
+
 export default {
 
   setup() {
@@ -149,9 +184,9 @@ export default {
       return row.type === value
     };
     const filterHandler = (
-      value,
-      row,
-      column,
+        value,
+        row,
+        column,
     ) => {
       const property = column['property']
       return row[property] === value
@@ -174,21 +209,18 @@ export default {
       },
       formConfirmQuestion: {
         type: ' ',
+        detail: '',
         question: ' ',
-        choice: {
-          A: ' ',
-          B: ' ',
-          C: ' ',
-          D: ' ',
-        },
-        ans: '',
+        ansFilling: '',
+        ansMulti: '',
+        ansSingle: '',
       },
       search: "",
       currentPage: 1,
       pageSize: 10,
-      totalPage: 10,
+      totalPage: 100,//TODO: 通过后端获取问题总数
       dialogVisibleUpload: false,
-      dialogVisibleConfirm: false,
+      dialogVisibleEdit: false,
       tableData: [
         // {
         //   ID: '777',
@@ -206,34 +238,42 @@ export default {
     addQuestion() {
       this.dialogVisibleUpload = true
     },
-    handleDetail() {
+    handleEdit() {
+      this.dialogVisibleEdit = true
+    },
+    handleDelete() {
 
     },
-    handleSizeChange() {
-
+    handleEditConfirm() {
+      this.dialogVisibleEdit = false
     },
-    handleCurrentChange() {
-
+    handleSizeChange(number) {
+      this.pageSize = number
+      this.getQuestion()
+    },
+    handleCurrentChange(number) {
+      this.currentPage = number
+      this.getQuestion()
     },
     getQuestion() {
       fetch("http://127.0.0.1:5001/api/getQuestionOrdered", {
         method: "POST",
         body: JSON.stringify({
-          "num": 100,
-          "offset": 0
+          "num": this.pageSize,
+          "offset": this.pageSize * (this.currentPage - 1)
         }),
         headers: {
           "Content-Type": "application/json"
         },
       }).then(res => res.json())
-        .catch(error => {
-          console.error('Error:', error)
-        })
-        .then((responseJson) => {
-          console.log(responseJson)
-          this.tableData = responseJson['example_questions']
-        }
-        )
+          .catch(error => {
+            console.error('Error:', error)
+          })
+          .then((responseJson) => {
+                console.log(responseJson)
+                this.tableData = responseJson['example_questions']
+              }
+          )
     }
   }
 }
