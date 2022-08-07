@@ -1,4 +1,3 @@
-from pkgutil import get_data
 import sqlite3
 import os.path
 import json
