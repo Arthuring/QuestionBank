@@ -3,10 +3,8 @@
 '''
 @Note: Python大作业后端
 '''
-import traceback
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import argparse
 from utils.data_base import db_wrap
 import json
 
