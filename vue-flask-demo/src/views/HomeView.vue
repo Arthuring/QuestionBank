@@ -25,6 +25,7 @@
 <!--    table-->
     <el-table :data="tableData" max-height="auto" stripe style="max-width: calc(100vw - 20px)">
       <el-table-column prop="ID" label="ID" sortable/>
+      <el-table-column prop="uploader" label="uploader" width="auto" />
       <el-table-column prop="question" label="Question"/>
       <el-table-column prop="type" label="Type"
                        :filters="[
@@ -46,24 +47,31 @@
       </el-table-column>
       <el-table-column fixed="right" label="Operations" width="fixed">
         <template #default>
-          <el-button plain type="primary"  size="small" @click="handleDetail"
-          >Detail</el-button
-          >
           <el-button plain size="small">Edit</el-button>
+          <el-button plain type="danger"  size="small" @click="handleDetail"
+          >Delete</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
-    <div style="margin:10px 0">
-      <el-pagination
-          :currentPage="currentPage"
-          :page-size="pageSize"
-          :page-sizes="[5, 10, 15]"
-          :small="small"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="totalPage"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-      />
+    <div style="margin:10px 0; height: 50px; line-height: 50px;">
+      <div style="flex: 1; ">
+        <el-pagination
+            :currentPage="currentPage"
+            :page-size="pageSize"
+            :page-sizes="[5, 10, 15]"
+            :small="small"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="totalPage"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+        />
+      </div>
+      <div style="width: 120px">
+        <el-button plain type="primary" round size="large"  @click="confirmQuestion">Confirm
+          <el-icon class="el-icon--right"><Check /></el-icon>
+        </el-button>
+      </div>
     </div>
 <!--    弹窗-上传问题-->
     <el-dialog
@@ -213,12 +221,14 @@ export default {
       tableData: [
         {
           ID: '111',
+          uploader:'Tom',
           type: 'filling',
           question: 'Beihang University 的英文简写是______',
           ans:'',
         },
         {
           ID: '222',
+          uploader:'Tom',
           type: 'single choice',
           question: '下列哪个xxx不是xxx？',
           choice: {
@@ -231,30 +241,35 @@ export default {
         },
         {
           ID: '333',
+          uploader:'Tom',
           type: 'multiple choice',
           question: '下列哪些是xxxxx？',
           ans:'',
         },
         {
           ID: '444',
+          uploader:'Tom',
           type: 'single choice',
           question: 'This is question 444 single choice',
           ans:'',
         },
         {
           ID: '555',
+          uploader:'Tom',
           type: 'multiple choice',
           question: 'This is question 555 multiple choice',
           ans:'',
         },
         {
           ID: '666',
+          uploader:'Tom',
           type: 'filling',
           question: 'No. 189, Grove St, Los Angeles',
           ans:'',
         },
         {
           ID: '777',
+          uploader:'Tom',
           type: 'multiple choice',
           question: 'No. 189, Grove St, Los Angeles',
           ans:'',
@@ -274,7 +289,10 @@ export default {
     },
     handleCurrentChange(){
 
-    }
+    },
+    confirmQuestion(){
+
+    },
   }
 }
 </script>
