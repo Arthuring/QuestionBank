@@ -8,6 +8,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import argparse
 from utils.data_base import db_wrap
+import json
 
 app = Flask(__name__)
 CORS(app)
@@ -38,8 +39,8 @@ def getQuestionOrdered():
     question_list = []
     for elem in ret:
         id = elem[0]
-        question = elem[1]
-        question['id'] = id
+        question = json.loads(elem[1])
+        question['ID'] = id
         # 依据前端是否需要答案，配置此项目
         question.pop('ans')
         question_list.append(question)
@@ -75,4 +76,4 @@ if __name__ == "__main__":
     # 开启服务
     app.config['JSON_AS_ASCII'] = False
     port = 5001
-    app.run(host='0.0.0.0', port=port, threaded=True)
+    app.run(host='0.0.0.0', port=port, threaded=False)
