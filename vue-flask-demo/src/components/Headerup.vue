@@ -14,8 +14,8 @@
     </span>
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item>Information</el-dropdown-item>
-            <el-dropdown-item>Settings</el-dropdown-item>
+            <el-dropdown-item><el-icon class="small"> <User /></el-icon>Information</el-dropdown-item>
+            <el-dropdown-item> <el-icon class="small"> <Setting /></el-icon>Settings</el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>

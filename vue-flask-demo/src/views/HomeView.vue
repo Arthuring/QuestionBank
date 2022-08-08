@@ -1,4 +1,4 @@
-<template>
+<template xmlns:el-col="http://www.w3.org/1999/html">
   <div style="padding: 10px">
     <!--    <img alt="Vue logo" src="../assets/logo.png">-->
     <!--    <HelloWorld msg="Welcome to Your Vue.js App"/>-->
@@ -6,26 +6,27 @@
       Welcome to Question Bank :)
     </div>
     <!--    upload-->
-    <div style="margin: 10px 0">
-      <el-button type="primary" round size="large" @click="addQuestion">Upload Question
-        <el-icon class="el-icon--right">
-          <Upload/>
-        </el-icon>
-      </el-button>
+    <div style="margin: 10px 0;">
+      <el-row justify="space-between">
+        <el-col :span="8">
+          <el-button type="primary" round size="large" @click="addQuestion">Upload Question
+            <el-icon class="el-icon--right" size="large">
+              <UploadFilled/>
+            </el-icon>
+          </el-button>
+        </el-col>
+        <el-col :span="8">
+          <span style="text-align: right; margin-left: 5px; color: #6db1f8; font-weight: bold ">
+          Your questions are following <el-icon size="large"><ArrowDownBold/></el-icon>
+         </span>
+        </el-col>
+      </el-row>
+
+
     </div>
     <!--    search-->
     <div style="margin: 10px 0">
-      <el-input v-model="search" placeholder="Keywords" style="width: 25%"/>
-      <el-button type="primary" style="margin-left: 5px" plain>
-        <el-icon class="el-icon--left">
-          <Search/>
-        </el-icon>
-        Search
-      </el-button>
-      <span style="margin-left: 5px; color: #6db1f8; font-weight: bold  ">
 
-        Your questions are following:
-      </span>
     </div>
     <!--    table-->
     <el-table :data="tableData" max-height="450" stripe :table-layout="'auto'">
@@ -45,7 +46,7 @@
       <el-table-column fixed="right" label="Operations" width="fixed">
         <template #default>
           <el-button-group class="ml-4">
-            <el-button plain type="primary" size="small" :icon="'Edit'"  @click="handleEdit"/>
+            <el-button plain type="primary" size="small" :icon="'Edit'" @click="handleEdit"/>
             <el-popconfirm title="Are you sure to delete this?" @confirm="handleDelete">
               <template #reference>
                 <el-button plain type="danger" size="small"
@@ -173,6 +174,7 @@
 // import HelloWorld from '@/components/HelloWorld.vue'
 import {TableColumnCtx} from 'element-plus/es/components/table/src/table-column/defaults'
 import {UploadFilled} from '@element-plus/icons-vue'
+import SearchBar from "@/components/SearchBar";
 
 export default {
 
@@ -201,6 +203,7 @@ export default {
   name: 'HomeView',
   components: {
     // HelloWorld
+    SearchBar,
   },
   data() {
     return {
