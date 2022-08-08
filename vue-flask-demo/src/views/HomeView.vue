@@ -22,7 +22,6 @@
       </el-header>
       <el-main style="overflow: auto">
         <!--    upload-->
-
         <el-table :data="tableData" max-height="500" stripe :table-layout="'auto'">
           <el-table-column prop="ID" label="ID" sortable width="auto"/>
           <el-table-column prop="question" label="Question"/>
@@ -38,10 +37,10 @@
             </template>
           </el-table-column>
           <el-table-column fixed="right" label="Operations" width="fixed">
-            <template #default>
+            <template #default="scope">
               <el-button-group class="ml-4">
-                <el-button plain type="primary" size="small" :icon="'Edit'" @click="handleEdit"/>
-                <el-popconfirm title="Are you sure to delete this?" @confirm="handleDelete">
+                <el-button plain type="primary" size="small" :icon="'Edit'" @click="handleEdit(scope.$index)"/>
+                <el-popconfirm title="Are you sure to delete this?" @confirm="handleDelete(scope.$index)">
                   <template #reference>
                     <el-button plain type="danger" size="small"
                     >
@@ -116,7 +115,7 @@
           <el-input v-model="formConfirmQuestion.question"/>
         </el-form-item>
         <el-form-item label="detail">
-          <el-input v-model="formConfirmQuestion.detail" type="textarea"/>
+          <el-input v-model="formConfirmQuestion.description" type="textarea"/>
         </el-form-item>
         <el-form-item label="type">
           <el-select v-model="formConfirmQuestion.type" placeholder="please select type">
@@ -125,23 +124,7 @@
             <el-option label="multiple choice" value="multiple choice"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="Answer(multiple choice)">
-          <el-checkbox-group v-model="formConfirmQuestion.ansMulti">
-            <el-checkbox label="A" name="type"/>
-            <el-checkbox label="B" name="type"/>
-            <el-checkbox label="C" name="type"/>
-            <el-checkbox label="D" name="type"/>
-          </el-checkbox-group>
-        </el-form-item>
-        <el-form-item label="Answer(single choice)">
-          <el-radio-group v-model="formConfirmQuestion.ansSingle">
-            <el-radio label="A"/>
-            <el-radio label="B"/>
-            <el-radio label="C"/>
-            <el-radio label="D"/>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="Answer(filling)">
+        <el-form-item label="Answer">
           <el-input v-model="formConfirmQuestion.ansFilling" type="textarea"/>
         </el-form-item>
       </el-form>
@@ -203,11 +186,9 @@ export default {
       },
       formConfirmQuestion: {
         type: ' ',
-        detail: '',
+        description: '',
         question: ' ',
-        ansFilling: '',
-        ansMulti: [],
-        ansSingle: '',
+        ansFilling: '请输入答案(不区分大小写，按字母顺序)',
       },
       search: "",
       currentPage: 1,
@@ -232,11 +213,15 @@ export default {
     addQuestion() {
       this.dialogVisibleUpload = true
     },
-    handleEdit() {
+    handleEdit(index) {
       this.dialogVisibleEdit = true
-    },
-    handleDelete() {
+      this.formConfirmQuestion.question = this.tableData[index].question
+      this.formConfirmQuestion.description = this.tableData[index].description
+      this.formConfirmQuestion.type = this.tableData[index].type
 
+    },
+    handleDelete(index) {
+      tableData.value.splice(index, 1)
     },
     handleEditConfirm() {
       this.dialogVisibleEdit = false
