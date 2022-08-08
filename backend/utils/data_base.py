@@ -73,7 +73,7 @@ class db_wrap:
         data = cur.fetchone()
         return data
 
-    def update_data_byindex(self,data_id:int,data:str):
+    def update_data_byid(self,data_id:int,data:str):
         old_data = self.get_data_byid(data_id)
         if(old_data == None):
             id = data_id

@@ -109,21 +109,12 @@ def delQuestion():
 # 前端请求对题目信息进行变更（传过来题目id，变更后的题目json,后端进行保存）
 @app.route("/api/setQuestion", methods=['POST'])
 def setQuestion():
-    data = request.get_json()
-    # 数量，从前端请求中获取
-    num = int(data['num'])
-    ret = db.get_data_random(num)
-    question_list = []
-    for elem in ret:
-        id = elem[0]
-        question = elem[1]
-        question['id'] = id
-        # 依据前端是否需要答案，配置此项目
-        question.pop('ans')
-        question_list.append(question)
+    data = request.get_data()
+    data_id = data['ID']
+    question_json = data['question_info']
+    db.update_data_byid(data_id,question_json)
     response = {
-        "example_questions": question_list,
-        "code": 'OK'
+        'code': 'OK'
     }
     return jsonify(response)
 
