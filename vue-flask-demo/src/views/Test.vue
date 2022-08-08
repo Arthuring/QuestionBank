@@ -13,33 +13,58 @@
         </el-row>
       </el-header>
       <el-main style="overflow: auto">
-        <el-table :data="tableData" max-height="550" stripe :table-layout="'auto'">
-          <el-table-column type="selection" width="55" />
-          <el-table-column prop="ID" label="ID" sortable width="auto"/>
-          <el-table-column prop="uploader" label="uploader"/>
-          <el-table-column prop="question" label="Question"/>
-          <el-table-column prop="type" label="Type" :filters="[
+        <div>
+          <el-table :data="tableData" max-height="550" stripe :table-layout="'auto'">
+            <el-table-column type="selection" width="55"/>
+            <el-table-column prop="ID" label="ID" sortable width="auto"/>
+            <el-table-column prop="uploader" label="uploader"/>
+            <el-table-column prop="question" label="Question"/>
+            <el-table-column prop="type" label="Type" :filters="[
         { text: 'filling', value: 'filling' },
         { text: 'single choice', value: 'single choice' },
         { text: 'multiple choice', value: 'multiple choice' },
       ]" :filter-method="filterTag" filter-placement="bottom-end">
-            <template #default="scope">
-              <el-tag :type="scope.row.type === 'filling' ? '' :
+              <template #default="scope">
+                <el-tag :type="scope.row.type === 'filling' ? '' :
           scope.row.type === 'single choice' ? 'warning' : 'success'" disable-transitions>{{ scope.row.type }}
-              </el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column fixed="right" label="Operations" width="fixed">
-            <template #default>
-              <el-button plain type="default" size="small" @click="handleEdit" round>
-                <el-icon class="el-icon--left">
-                  <CirclePlus/>
-                </el-icon>
-                Detail
+                </el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column fixed="right" label="Operations" width="fixed">
+              <template #default="scope">
+                <el-button plain type="default" size="small" @click="handleDetail(scope.$index)" round>
+                  <el-icon class="el-icon--left">
+                    <CirclePlus/>
+                  </el-icon>
+                  Detail
+                </el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+        <div style="margin-top: 16px">
+          <el-row justify="space-between" type="flex" >
+            <el-col :span="8">
+              <el-button type="primary" >
+                Random
               </el-button>
-            </template>
-          </el-table-column>
-        </el-table>
+              <el-input-number
+                  v-model="randomNum"
+                  class="mx-4"
+                  :min="1"
+                  :max="10"
+                  controls-position="right"
+                  @change="handleChangeRandom"
+              />
+            </el-col>
+            <el-col :span="8">
+              <el-button type="primary" style="float: right;" size="default">
+                Go to Test
+                <el-icon><DArrowRight /></el-icon>
+              </el-button>
+            </el-col>
+          </el-row>
+        </div>
       </el-main>
       <el-footer style="position: absolute; bottom: 0">
         <el-pagination :currentPage="currentPage" :page-size="pageSize" :page-sizes="[5, 10, 15]" :small="small"
@@ -49,34 +74,63 @@
       </el-footer>
     </el-container>
 
-    <el-dialog v-model="dialogVisibleEdit" title="Detail" width="70%" :before-close="handleCloseEdit">
-      <template #default>
-        <div
-            class="demo-rich-conent"
-            style="display: flex; gap: 16px; flex-direction: column"
-        >
-          <div>
-            <p
-                class="demo-rich-content__name"
-                style="margin: 0; font-weight: 500"
-            >
-              Element Plus
-            </p>
-            <p
-                class="demo-rich-content__mention"
-                style="margin: 0; font-size: 14px; color: var(--el-color-info)"
-            >
-              @element-plus
-            </p>
+    <el-dialog v-model="dialogVisibleDetail" title="Detail" width="70%" :before-close="handleCloseEdit">
+    <!--      TODO: 绑定变量-->
+    <el-descriptions
+        class="margin-top"
+        :title="this.formDetail.question"
+        :column="1"
+        size="default"
+        border
+    >
+      <el-descriptions-item>
+        <template #label>
+          <div class="cell-item">
+            <el-icon :style="iconStyle">
+              <office-building/>
+            </el-icon>
+            Type
           </div>
-
-          <p class="demo-rich-content__desc" style="margin: 0">
-            Element Plus, a Vue 3 based component library for developers,
-            designers and product managers
-          </p>
-        </div>
-      </template>
-    </el-dialog>
+        </template>
+        <el-tag size="small">
+          {{ this.formDetail.type }}
+        </el-tag>
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template #label>
+          <div class="cell-item">
+            <el-icon :style="iconStyle">
+              <user/>
+            </el-icon>
+            Uploader
+          </div>
+        </template>
+        {{ this.formDetail.uploader }}
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template #label>
+          <div class="cell-item">
+            <el-icon :style="iconStyle">
+              <iphone/>
+            </el-icon>
+            Description
+          </div>
+        </template>
+        {{ this.formDetail.description }}
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template #label>
+          <div class="cell-item">
+            <el-icon :style="iconStyle">
+              <location/>
+            </el-icon>
+            Answer
+          </div>
+        </template>
+        {{ this.formDetail.ans }}
+      </el-descriptions-item>
+    </el-descriptions>
+  </el-dialog>
   </div>
 </template>
 
@@ -87,10 +141,32 @@ export default {
   components: {
     SearchBar
   },
+  setup() {
+    const formatter = (row, column) => {
+      return row.address
+    };
+    const filterTag = (value, row) => {
+      return row.type === value
+    };
+    const filterHandler = (
+        value,
+        row,
+        column,
+    ) => {
+      const property = column['property']
+      return row[property] === value
+    };
+    return {
+      formatter,
+      filterTag,
+      filterHandler
+    }
 
+  },
   data() {
     return {
-      dialogVisibleEdit: false,
+      randomNum:10,
+      dialogVisibleDetail: false,
       currentPage: 1,
       pageSize: 15,
       totalPage: 100,//TODO: 通过后端获取问题总数
@@ -102,6 +178,13 @@ export default {
         ansFilling: '',
         ansMulti: '',
         ansSingle: '',
+      },
+      formDetail: {
+        type: 'multiple choice',
+        uploader: 'Arthuring',
+        description: "下列正确的是 A：xxx B: xxx C: xxx D:xxx",
+        question: '下列正确的是',
+        ans: 'ABC',
       },
     }
   },
@@ -118,8 +201,16 @@ export default {
       this.currentPage = number
       this.getQuestion()
     },
-    handleEdit() {
-      this.dialogVisibleEdit = true
+    handleChangeRandom(number){
+      this.randomNum = number
+    },
+    handleDetail(index) {
+      this.dialogVisibleDetail = true
+      this.formDetail.type = this.tableData[index].type
+      this.formDetail.uploader = this.tableData[index].uploader
+      this.formDetail.description = this.tableData[index].description
+      this.formDetail.question = this.tableData[index].question
+      this.formDetail.ans = this.tableData[index].ans
     },
     getQuestion() {
       fetch("http://127.0.0.1:5001/api/getQuestionOrdered", {

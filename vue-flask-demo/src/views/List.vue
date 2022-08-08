@@ -29,8 +29,8 @@
             </template>
           </el-table-column>
           <el-table-column fixed="right" label="Operations" width="fixed">
-            <template #default>
-              <el-button plain type="default" size="small" @click="handleEdit" round>
+            <template #default="scope">
+              <el-button plain type="default" size="small" @click="handleDetail(scope.$index)" round>
                 <el-icon class="el-icon--left">
                   <CirclePlus/>
                 </el-icon>
@@ -47,34 +47,63 @@
                        @current-change="handleCurrentChange"/>
       </el-footer>
     </el-container>
-
-    <el-dialog v-model="dialogVisibleEdit" title="Detail" width="70%" :before-close="handleCloseEdit">
-      <template #default>
-        <div
-            class="demo-rich-conent"
-            style="display: flex; gap: 16px; flex-direction: column"
-        >
-          <div>
-            <p
-                class="demo-rich-content__name"
-                style="margin: 0; font-weight: 500"
-            >
-              Element Plus
-            </p>
-            <p
-                class="demo-rich-content__mention"
-                style="margin: 0; font-size: 14px; color: var(--el-color-info)"
-            >
-              @element-plus
-            </p>
-          </div>
-
-          <p class="demo-rich-content__desc" style="margin: 0">
-            Element Plus, a Vue 3 based component library for developers,
-            designers and product managers
-          </p>
-        </div>
-      </template>
+    <!--弹窗-详情-->
+    <el-dialog v-model="dialogVisibleDetail" title="Detail" width="70%" :before-close="handleCloseEdit">
+      <!--      TODO: 绑定变量-->
+      <el-descriptions
+          class="margin-top"
+          :title="this.formDetail.question"
+          :column="1"
+          size="default"
+          border
+      >
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">
+              <el-icon :style="iconStyle">
+                <office-building/>
+              </el-icon>
+              Type
+            </div>
+          </template>
+          <el-tag size="small">
+            {{ this.formDetail.type }}
+          </el-tag>
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">
+              <el-icon :style="iconStyle">
+                <user/>
+              </el-icon>
+              Uploader
+            </div>
+          </template>
+          {{ this.formDetail.uploader }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">
+              <el-icon :style="iconStyle">
+                <iphone/>
+              </el-icon>
+              Description
+            </div>
+          </template>
+          {{ this.formDetail.description }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">
+              <el-icon :style="iconStyle">
+                <location/>
+              </el-icon>
+              Answer
+            </div>
+          </template>
+          {{ this.formDetail.ans }}
+        </el-descriptions-item>
+      </el-descriptions>
     </el-dialog>
   </div>
 </template>
@@ -86,10 +115,31 @@ export default {
   components: {
     SearchBar
   },
+  setup() {
+    const formatter = (row, column) => {
+      return row.address
+    };
+    const filterTag = (value, row) => {
+      return row.type === value
+    };
+    const filterHandler = (
+        value,
+        row,
+        column,
+    ) => {
+      const property = column['property']
+      return row[property] === value
+    };
+    return {
+      formatter,
+      filterTag,
+      filterHandler
+    }
 
+  },
   data() {
     return {
-      dialogVisibleEdit: false,
+      dialogVisibleDetail: false,
       currentPage: 1,
       pageSize: 15,
       totalPage: 100,//TODO: 通过后端获取问题总数
@@ -102,6 +152,13 @@ export default {
         ansMulti: '',
         ansSingle: '',
       },
+      formDetail: {
+        type: 'multiple choice',
+        uploader: 'Arthuring',
+        description: "下列正确的是 A：xxx B: xxx C: xxx D:xxx",
+        question: '下列正确的是',
+        ans: 'ABC',
+      }
     }
   },
   name: "List",
@@ -117,8 +174,13 @@ export default {
       this.currentPage = number
       this.getQuestion()
     },
-    handleEdit() {
-      this.dialogVisibleEdit = true
+    handleDetail(index) {
+      this.dialogVisibleDetail = true
+      this.formDetail.type = this.tableData[index].type
+      this.formDetail.uploader = this.tableData[index].uploader
+      this.formDetail.description = this.tableData[index].description
+      this.formDetail.question = this.tableData[index].question
+      this.formDetail.ans = this.tableData[index].ans
     },
     getQuestion() {
       fetch("http://127.0.0.1:5001/api/getQuestionOrdered", {
