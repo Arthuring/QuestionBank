@@ -3,6 +3,7 @@
 '''
 @Note: Python大作业后端
 '''
+from urllib import response
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from utils.data_base import db_wrap
@@ -74,7 +75,7 @@ def getQuestionRandom():
         "code": 'OK'
     }
     return jsonify(response)
-    
+
 def random_filename(filename):
     ext = os.path.splitext(filename)[-1]
     return uuid.uuid4().hex + ext
@@ -94,6 +95,16 @@ def uploadFile():
 
 # 前端请求添加题目（传过来图片，和提交者名称，返回题目列表）
 # 流程 获取图片文件 -> (optional) 对图片进行转码 -> OCR -> parser -> 加入提交者名称 -> database -> 返回
+
+@app.route("/api/delQuestion", methods=['POST'])
+def delQuestion():
+    data = request.get_data()
+    delete_id = data['ID']
+    db.delete_data(delete_id)
+    response = {
+        'code': 'OK'
+    }
+    return jsonify(response)
 
 # 前端请求对题目信息进行变更（传过来题目id，变更后的题目json,后端进行保存）
 @app.route("/api/setQuestion", methods=['POST'])
