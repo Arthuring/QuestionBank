@@ -23,3 +23,9 @@ pnpm-debug.log*
 *.sw?
 .idea/
 backend/utils/__pycache__/data_base.cpython-39.pyc 
+
+# Python just_in_time_compile files
+*.pyc
+
+# Database files
+*.db
