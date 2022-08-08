@@ -212,7 +212,7 @@ export default {
 
     },
     handleDelete(index) {
-      this.delQuestion(this.tableData[index].ID)
+      this.delQuestion(this.tableData[index]['ID'])
       this.getQuestion()
     },
     handleEditConfirm() {
@@ -247,7 +247,7 @@ export default {
           )
     },
     delQuestion(ID) {
-      fetch("http://127.0.0.1:5001/api/getQuestionOrdered", {
+      fetch("http://127.0.0.1:5001/api/delQuestion", {
         method: "POST",
         body: JSON.stringify({
           "ID": ID,

@@ -22,6 +22,7 @@ pnpm-debug.log*
 *.sln
 *.sw?
 .idea/
+backend/*.db
 backend/uploads_tmp
 backend/utils/__pycache__/data_base.cpython-39.pyc 
 
