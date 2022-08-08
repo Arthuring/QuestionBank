@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import List from '../views/List.vue'
 import Test from '../views/Test.vue'
 import Analysis from "@/views/Analysis";
+import Login from "@/views/Login.vue"
 
 const routes = [
   {
@@ -33,6 +34,11 @@ const routes = [
     path:'/analysis',
     name: 'analysis',
     component: Analysis
+  },
+  {
+    path:'/login',
+    name: 'login',
+    component: Login
   }
 ]
 

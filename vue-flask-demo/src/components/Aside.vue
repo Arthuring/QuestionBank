@@ -59,6 +59,16 @@
           <span>Analysis</span>
         </el-menu-item>
       </router-link>
+      <router-link to="/login" style="text-decoration: none">
+        <el-menu-item index="5">
+          <el-icon>
+            <el-icon>
+              <DataLine/>
+            </el-icon>
+          </el-icon>
+          <span>Login</span>
+        </el-menu-item>
+      </router-link>
     </el-menu>
 
   </div>
