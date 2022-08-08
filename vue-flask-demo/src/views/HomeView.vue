@@ -199,6 +199,7 @@ export default {
   },
   created() {
     this.getQuestion()
+    this.getQuestionNum()
   },
   methods: {
     addQuestion() {
@@ -214,6 +215,11 @@ export default {
     handleDelete(index) {
       this.delQuestion(this.tableData[index]['ID'])
       this.getQuestion()
+      this.getQuestionNum()
+    },
+    handleClose() {
+      this.getQuestion()
+      this.getQuestionNum()
     },
     handleEditConfirm() {
       this.dialogVisibleEdit = false
@@ -221,10 +227,12 @@ export default {
     handleSizeChange(number) {
       this.pageSize = number
       this.getQuestion()
+      this.getQuestionNum()
     },
     handleCurrentChange(number) {
       this.currentPage = number
       this.getQuestion()
+      this.getQuestionNum()
     },
     getQuestion() {
       fetch("http://127.0.0.1:5001/api/getQuestionOrdered", {
@@ -243,6 +251,25 @@ export default {
           .then((responseJson) => {
                 console.log(responseJson)
                 this.tableData = responseJson['example_questions']
+              }
+          )
+    },
+    getQuestionNum() {
+      fetch("http://127.0.0.1:5001/api/getQuestionNum", {
+        method: "POST",
+        body: JSON.stringify({
+          "num": this.pageSize
+        }),
+        headers: {
+          "Content-Type": "application/json"
+        },
+      }).then(res => res.json())
+          .catch(error => {
+            console.error('Error:', error)
+          })
+          .then((responseJson) => {
+                console.log(responseJson)
+                this.totalPage = responseJson['num']
               }
           )
     },
