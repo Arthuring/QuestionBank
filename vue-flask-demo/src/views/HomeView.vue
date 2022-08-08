@@ -9,14 +9,14 @@
           <el-col :span="8">
             <el-button type="primary" round size="large" @click="addQuestion">Upload Question
               <el-icon class="el-icon--right" size="large">
-                <UploadFilled />
+                <UploadFilled/>
               </el-icon>
             </el-button>
           </el-col>
           <el-col :span="8">
             <span style="text-align: right; margin-left: 5px; color: #6db1f8; font-weight: bold ">
               Your questions are following <el-icon size="large">
-                <ArrowDownBold />
+                <ArrowDownBold/>
               </el-icon>
             </span>
           </el-col>
@@ -25,8 +25,8 @@
       <el-main style="overflow: auto">
         <!--    upload-->
         <el-table :data="tableData" max-height="500" stripe :table-layout="'auto'">
-          <el-table-column prop="ID" label="ID" sortable width="auto" />
-          <el-table-column prop="question" label="Question" />
+          <el-table-column prop="ID" label="ID" sortable width="auto"/>
+          <el-table-column prop="question" label="Question"/>
           <el-table-column prop="type" label="Type" :filters="[
             { text: 'filling', value: 'filling' },
             { text: 'single choice', value: 'single choice' },
@@ -42,16 +42,21 @@
             <template #default="scope">
               <el-button-group class="ml-4">
                 <el-button plain type="primary" size="small" :icon="'Edit'" @click="handleEdit(scope.$index)"/>
-                <el-popconfirm title="Are you sure to delete this?" @confirm="handleDelete(scope.$index)">
-                  <template #reference>
-                    <el-button plain type="danger" size="small">
-                      <el-icon>
-                        <Delete />
-                      </el-icon>
-                    </el-button>
+                <!--                <el-popconfirm title="Are you sure to delete this?" @confirm.prevent="handleDelete(scope.$index)">-->
+                <!--                  <template #reference>-->
+                <!--                    <el-button plain type="danger" size="small">-->
+                <!--                      <el-icon>-->
+                <!--                        <Delete />-->
+                <!--                      </el-icon>-->
+                <!--                    </el-button>-->
 
-                  </template>
-                </el-popconfirm>
+                <!--                  </template>-->
+                <!--                </el-popconfirm>-->
+                <el-button plain type="danger" size="small" @click="handleDelete(scope.$index)" >
+                  <el-icon>
+                    <Delete/>
+                  </el-icon>
+                </el-button>
               </el-button-group>
             </template>
           </el-table-column>
@@ -61,15 +66,16 @@
         <el-row justify="space-between">
           <el-col :span="22">
             <el-pagination :currentPage="currentPage" :page-size="pageSize" :page-sizes="[5, 10, 15]" :small="small"
-              layout="total, sizes, prev, pager, next, jumper" :total="totalPage" @size-change="handleSizeChange"
-              @current-change="handleCurrentChange" />
+                           layout="total, sizes, prev, pager, next, jumper" :total="totalPage"
+                           @size-change="handleSizeChange"
+                           @current-change="handleCurrentChange"/>
           </el-col>
           <el-col :span="2">
 
             <el-button type="primary" size="default">
               submit
               <el-icon class="el-icon--right">
-                <Check />
+                <Check/>
               </el-icon>
             </el-button>
           </el-col>
@@ -81,7 +87,7 @@
     <el-dialog v-model="dialogVisibleUpload" title="Upload question file" width="70%" :before-close="handleClose">
       <el-upload class="upload-demo" drag action="http://127.0.0.1:5001/api/uploadFile" multiple>
         <el-icon class="el-icon--upload">
-          <upload-filled />
+          <upload-filled/>
         </el-icon>
         <div class="el-upload__text">
           Drop file here or <em>click to upload</em>
@@ -97,16 +103,16 @@
     <el-dialog v-model="dialogVisibleEdit" title="Confirm your question" width="70%" :before-close="handleCloseEdit">
       <el-form :model="formConfirmQuestion" :label-position="'left'" label-width="150px">
         <el-form-item label="Question">
-          <el-input v-model="formConfirmQuestion.question" />
+          <el-input v-model="formConfirmQuestion.question"/>
         </el-form-item>
         <el-form-item label="detail">
           <el-input v-model="formConfirmQuestion.description" type="textarea"/>
         </el-form-item>
         <el-form-item label="type">
           <el-select v-model="formConfirmQuestion.type" placeholder="please select type">
-            <el-option label="filling" value="filling" />
-            <el-option label="single choice" value="single choice" />
-            <el-option label="multiple choice" value="multiple choice" />
+            <el-option label="filling" value="filling"/>
+            <el-option label="single choice" value="single choice"/>
+            <el-option label="multiple choice" value="multiple choice"/>
           </el-select>
         </el-form-item>
         <el-form-item label="Answer">
@@ -119,7 +125,7 @@
           <el-button type="primary" @click="dialogVisibleEdit = false">
             Confirm
             <el-icon class="el-icon--right">
-              <Check />
+              <Check/>
             </el-icon>
           </el-button>
         </span>
@@ -131,8 +137,8 @@
 <script>
 // @ is an alias to /src
 // import HelloWorld from '@/components/HelloWorld.vue'
-import { TableColumnCtx } from 'element-plus/es/components/table/src/table-column/defaults'
-import { UploadFilled } from '@element-plus/icons-vue'
+import {TableColumnCtx} from 'element-plus/es/components/table/src/table-column/defaults'
+import {UploadFilled} from '@element-plus/icons-vue'
 import SearchBar from "@/components/SearchBar";
 
 export default {
@@ -145,9 +151,9 @@ export default {
       return row.type === value
     };
     const filterHandler = (
-      value,
-      row,
-      column,
+        value,
+        row,
+        column,
     ) => {
       const property = column['property']
       return row[property] === value
@@ -206,7 +212,8 @@ export default {
 
     },
     handleDelete(index) {
-      tableData.value.splice(index, 1)
+      this.delQuestion(this.tableData[index].ID)
+      this.getQuestion()
     },
     handleEditConfirm() {
       this.dialogVisibleEdit = false
@@ -230,14 +237,33 @@ export default {
           "Content-Type": "application/json"
         },
       }).then(res => res.json())
-        .catch(error => {
-          console.error('Error:', error)
-        })
-        .then((responseJson) => {
-          console.log(responseJson)
-          this.tableData = responseJson['example_questions']
-        }
-        )
+          .catch(error => {
+            console.error('Error:', error)
+          })
+          .then((responseJson) => {
+                console.log(responseJson)
+                this.tableData = responseJson['example_questions']
+              }
+          )
+    },
+    delQuestion(ID) {
+      fetch("http://127.0.0.1:5001/api/getQuestionOrdered", {
+        method: "POST",
+        body: JSON.stringify({
+          "ID": ID,
+        }),
+        headers: {
+          "Content-Type": "application/json"
+        },
+      }).then(res => res.json())
+          .catch(error => {
+            console.error('Error:', error)
+          })
+          .then((responseJson) => {
+                console.log(responseJson)
+                //this.tableData = responseJson['example_questions']
+              }
+          )
     }
   }
 }
