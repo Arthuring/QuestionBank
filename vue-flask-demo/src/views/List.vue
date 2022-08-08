@@ -63,12 +63,25 @@
               <el-icon :style="iconStyle">
                 <office-building/>
               </el-icon>
-              Type
+              ID
             </div>
           </template>
           <el-tag size="small">
-            {{ this.formDetail.type }}
+            {{ this.formDetail.ID }}
           </el-tag>
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">
+              <el-icon :style="iconStyle">
+                <office-building/>
+              </el-icon>
+              Type
+            </div>
+          </template>
+
+          {{ this.formDetail.type }}
+
         </el-descriptions-item>
         <el-descriptions-item>
           <template #label>
@@ -145,6 +158,7 @@ export default {
       totalPage: 100,//TODO: 通过后端获取问题总数
       tableData: [],
       formConfirmQuestion: {
+        ID: '',
         type: ' ',
         detail: '',
         question: ' ',
@@ -153,6 +167,7 @@ export default {
         ansSingle: '',
       },
       formDetail: {
+        ID: '',
         type: 'multiple choice',
         uploader: 'Arthuring',
         description: "下列正确的是 A：xxx B: xxx C: xxx D:xxx",
@@ -181,6 +196,7 @@ export default {
       this.formDetail.description = this.tableData[index].description
       this.formDetail.question = this.tableData[index].question
       this.formDetail.ans = this.tableData[index].ans
+      this.formDetail.ID = this.tableData[index].ID
     },
     getQuestion() {
       fetch("http://127.0.0.1:5001/api/getQuestionOrdered", {
