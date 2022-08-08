@@ -14,3 +14,9 @@ def img2String(imgPath: str):
     probType = re.findall(patStr, probStr)
     probCont = re.split(patStr, probStr)[1 : ]
     return list(map(lambda x: (x[0] + x[1]).strip(), zip(probType, probCont)))
+
+def get_seperation_questions(imgPath: str):
+    text = OCR(imgPath)
+    text = text.replace(' ','')
+    text = text.replace('\n','')
+    result = re.findall(r"")

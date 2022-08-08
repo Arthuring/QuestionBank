@@ -12,6 +12,7 @@ import uuid
 import os
 from urllib.parse import urljoin
 from ocr import OCR
+from parser import get_parsered_question
 
 app = Flask(__name__)
 CORS(app)
@@ -88,11 +89,18 @@ def uploadFile():
 
     filename = random_filename(file.filename)
     filepath = os.path.join('uploads_tmp', filename)
-    file.save(os.path.join(app.root_path, filepath))
+    filepath = os.path.join(app.root_path, filepath)
+    file.save(filepath)
+    try:
+        text = OCR(filepath)
+        print(text)
+        question = get_parsered_question(text)
+        print(question)
+        db.insert_data(question)
+    except:
+        return jsonify({'code' : 'ERROR IN PARSING'})
 
-    file_url = urljoin(request.host_url, filepath)
-
-    return file_url
+    return jsonify({'code' : 'OK'})
 
 # 前端请求添加题目（传过来图片，和提交者名称，返回题目列表）
 # 流程 获取图片文件 -> (optional) 对图片进行转码 -> OCR -> parser -> 加入提交者名称 -> database -> 返回

@@ -32,6 +32,8 @@
 
 import re
 def get_parsered_question(question:str):
+    question = question.replace(' ','')
+    print(question)
     controlling_flag = re.findall(r"\[(.+?)\]",question)
     question_str = re.findall(r"\](.+?)\[",question)
     ans_str = re.findall(r"\[Ans\]:(.+)",question)
