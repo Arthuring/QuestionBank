@@ -11,6 +11,7 @@ import json
 import uuid
 import os
 from urllib.parse import urljoin
+from ocr import OCR
 
 app = Flask(__name__)
 CORS(app)
@@ -95,11 +96,10 @@ def uploadFile():
 
 # 前端请求添加题目（传过来图片，和提交者名称，返回题目列表）
 # 流程 获取图片文件 -> (optional) 对图片进行转码 -> OCR -> parser -> 加入提交者名称 -> database -> 返回
-
 @app.route("/api/delQuestion", methods=['POST'])
 def delQuestion():
     data = request.get_data()
-    delete_id = data['ID']
+    delete_id = int(data['ID'])
     db.delete_data(delete_id)
     response = {
         'code': 'OK'
