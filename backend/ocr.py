@@ -10,6 +10,8 @@ def OCR(imgPath: str, mode='chi_sim'):
 
 def img2String(imgPath: str):
     probStr = OCR(imgPath, 'chi_sim').strip()
+    probStr = probStr.replace(' ','')
+    probStr = probStr.replace('\n',' ')
     patStr = r"\[填空题\]|\[单选\]|\[多选\]"
     probType = re.findall(patStr, probStr)
     probCont = re.split(patStr, probStr)[1 : ]

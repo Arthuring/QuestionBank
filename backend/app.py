@@ -10,8 +10,7 @@ from utils.data_base import db_wrap
 import json
 import uuid
 import os
-from urllib.parse import urljoin
-from ocr import OCR
+from ocr import img2String
 from parser import get_parsered_question
 
 app = Flask(__name__)
@@ -92,11 +91,12 @@ def uploadFile():
     filepath = os.path.join(app.root_path, filepath)
     file.save(filepath)
     try:
-        text = OCR(filepath)
+        text = img2String(filepath)
         print(text)
-        question = get_parsered_question(text)
-        print(question)
-        db.insert_data(question)
+        question_list = [get_parsered_question(question) for question in text]
+        print(question_list)
+        for question in question_list:
+            db.insert_data(question)
     except:
         return jsonify({'code' : 'ERROR IN PARSING'})
 
