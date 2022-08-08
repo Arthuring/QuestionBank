@@ -39,8 +39,12 @@ def getQuestionOrdered():
         id = elem[0]
         question = json.loads(elem[1])
         question['ID'] = id
+        if(question['type'] != 'filling'):
+            question['description'] = question['question'] + '\n' + ' '.join([elem + question['choice'][elem] for elem in question['choice']])
+        else:
+            question['description'] = question['question']
         # 依据前端是否需要答案，配置此项目
-        question.pop('ans')
+        # question.pop('ans')
         question_list.append(question)
     response = {
         "example_questions": question_list,
@@ -68,7 +72,29 @@ def getQuestionRandom():
         "code": 'OK'
     }
     return jsonify(response)
+# 前端请求添加题目（传过来图片，和提交者名称，返回题目列表）
+# 流程 获取图片文件 -> (optional) 对图片进行转码 -> OCR -> parser -> 加入提交者名称 -> database -> 返回
 
+# 前端请求对题目信息进行变更（传过来题目id，变更后的题目json,后端进行保存）
+@app.route("/api/setQuestion", methods=['POST'])
+def setQuestion():
+    data = request.get_json()
+    # 数量，从前端请求中获取
+    num = int(data['num'])
+    ret = db.get_data_random(num)
+    question_list = []
+    for elem in ret:
+        id = elem[0]
+        question = elem[1]
+        question['id'] = id
+        # 依据前端是否需要答案，配置此项目
+        question.pop('ans')
+        question_list.append(question)
+    response = {
+        "example_questions": question_list,
+        "code": 'OK'
+    }
+    return jsonify(response)
 
 if __name__ == "__main__":
     # 开启服务
