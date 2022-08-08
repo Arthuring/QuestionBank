@@ -7,6 +7,9 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from utils.data_base import db_wrap
 import json
+import uuid
+import os
+from urllib.parse import urljoin
 
 app = Flask(__name__)
 CORS(app)
@@ -52,7 +55,6 @@ def getQuestionOrdered():
     }
     return jsonify(response)
 
-
 @app.route("/api/getQuestionOrdered", methods=['POST'])
 def getQuestionRandom():
     data = request.get_json()
@@ -72,6 +74,24 @@ def getQuestionRandom():
         "code": 'OK'
     }
     return jsonify(response)
+    
+def random_filename(filename):
+    ext = os.path.splitext(filename)[-1]
+    return uuid.uuid4().hex + ext
+
+@app.route("/api/uploadFile", methods=['POST'])
+def uploadFile():
+    file = request.files.get('file')
+    print(file.filename)
+
+    filename = random_filename(file.filename)
+    filepath = os.path.join('uploads_tmp', filename)
+    file.save(os.path.join(app.root_path, filepath))
+
+    file_url = urljoin(request.host_url, filepath)
+
+    return file_url
+
 # 前端请求添加题目（传过来图片，和提交者名称，返回题目列表）
 # 流程 获取图片文件 -> (optional) 对图片进行转码 -> OCR -> parser -> 加入提交者名称 -> database -> 返回
 
