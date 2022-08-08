@@ -3,7 +3,7 @@ from utils.data_base import db_wrap
 
 db = db_wrap("my_question.db")
 
-from parser import get_parsered_question
+from question_parser import get_parsered_question
 
 # 要求格式示例（理论上修改正则就能改变）
 test_str_filling = '[填空题] Beihang University的英文简写是______ [Ans]:...'

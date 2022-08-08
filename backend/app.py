@@ -11,7 +11,7 @@ import json
 import uuid
 import os
 from ocr import img2String
-from parser import get_parsered_question
+from question_parser import get_parsered_question
 
 app = Flask(__name__)
 CORS(app)
