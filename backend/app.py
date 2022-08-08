@@ -25,7 +25,7 @@ def getQuestionNum():
     # 题库中题目的数量
     num = db.get_db_size()
     response = {
-        "example_questions": num,
+        "num": num,
         "code": 'OK'
     }
     return jsonify(response)
