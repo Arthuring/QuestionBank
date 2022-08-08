@@ -118,8 +118,9 @@ def delQuestion():
 # 前端请求对题目信息进行变更（传过来题目id，变更后的题目json,后端进行保存）
 @app.route("/api/setQuestion", methods=['POST'])
 def setQuestion():
-    data = request.get_data()
-    data_id = data['ID']
+    data = request.get_json()
+    print(data)
+    data_id = int(data['ID'])
     question_json = data['question_info']
     db.update_data_byid(data_id,question_json)
     response = {

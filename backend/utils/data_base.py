@@ -75,6 +75,12 @@ class db_wrap:
 
     def update_data_byid(self,data_id:int,data:str):
         old_data = self.get_data_byid(data_id)
+        if(type(data) != str):
+            if(type(data) == dict):
+                data = json.dumps(data)
+            else:
+                print('data_base: Error datatype !')
+                return -1
         if(old_data == None):
             id = data_id
             cur = self.sql_connection.cursor()
