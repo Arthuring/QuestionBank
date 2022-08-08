@@ -49,7 +49,7 @@
           <span>Test</span>
         </el-menu-item>
       </router-link>
-      <router-link to="/test" style="text-decoration: none">
+      <router-link to="/analysis" style="text-decoration: none">
         <el-menu-item index="4">
           <el-icon>
             <el-icon>

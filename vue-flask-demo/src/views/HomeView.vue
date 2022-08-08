@@ -1,91 +1,82 @@
 <template xmlns:el-col="http://www.w3.org/1999/html">
-  <div style="padding: 10px">
-    <!--    <img alt="Vue logo" src="../assets/logo.png">-->
-    <!--    <HelloWorld msg="Welcome to Your Vue.js App"/>-->
-    <div style="margin: 10px 0;font-weight: bolder; color:#79bbff;font-size: large">
-      Welcome to Question Bank :)
-    </div>
-    <!--    upload-->
-    <div style="margin: 10px 0;">
-      <el-row justify="space-between">
-        <el-col :span="8">
-          <el-button type="primary" round size="large" @click="addQuestion">Upload Question
-            <el-icon class="el-icon--right" size="large">
-              <UploadFilled/>
-            </el-icon>
-          </el-button>
-        </el-col>
-        <el-col :span="8">
+  <div style="padding: 10px 0;">
+    <el-container style="flex-direction: column;">
+      <el-header style="height: 70px">
+        <div style="font-weight: bolder; color:#79bbff;font-size: large">
+          Welcome to Question Bank :)
+        </div>
+        <el-row justify="space-between" style="padding: 10px 0">
+          <el-col :span="8">
+            <el-button type="primary" round size="large" @click="addQuestion">Upload Question
+              <el-icon class="el-icon--right" size="large">
+                <UploadFilled/>
+              </el-icon>
+            </el-button>
+          </el-col>
+          <el-col :span="8">
           <span style="text-align: right; margin-left: 5px; color: #6db1f8; font-weight: bold ">
           Your questions are following <el-icon size="large"><ArrowDownBold/></el-icon>
          </span>
-        </el-col>
-      </el-row>
+          </el-col>
+        </el-row>
+      </el-header>
+      <el-main style="overflow: auto">
+        <!--    upload-->
 
-
-    </div>
-    <!--    search-->
-    <div style="margin: 10px 0">
-
-    </div>
-    <!--    table-->
-    <el-table :data="tableData" max-height="450" stripe :table-layout="'auto'">
-      <el-table-column prop="ID" label="ID" sortable width="auto"/>
-      <el-table-column prop="question" label="Question"/>
-      <el-table-column prop="type" label="Type" :filters="[
+        <el-table :data="tableData" max-height="500" stripe :table-layout="'auto'">
+          <el-table-column prop="ID" label="ID" sortable width="auto"/>
+          <el-table-column prop="question" label="Question"/>
+          <el-table-column prop="type" label="Type" :filters="[
         { text: 'filling', value: 'filling' },
         { text: 'single choice', value: 'single choice' },
         { text: 'multiple choice', value: 'multiple choice' },
       ]" :filter-method="filterTag" filter-placement="bottom-end">
-        <template #default="scope">
-          <el-tag :type="scope.row.type === 'filling' ? '' :
+            <template #default="scope">
+              <el-tag :type="scope.row.type === 'filling' ? '' :
           scope.row.type === 'single choice' ? 'warning' : 'success'" disable-transitions>{{ scope.row.type }}
-          </el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column fixed="right" label="Operations" width="fixed">
-        <template #default>
-          <el-button-group class="ml-4">
-            <el-button plain type="primary" size="small" :icon="'Edit'" @click="handleEdit"/>
-            <el-popconfirm title="Are you sure to delete this?" @confirm="handleDelete">
-              <template #reference>
-                <el-button plain type="danger" size="small"
-                >
-                  <el-icon>
-                    <Delete/>
-                  </el-icon>
-                </el-button>
+              </el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column fixed="right" label="Operations" width="fixed">
+            <template #default>
+              <el-button-group class="ml-4">
+                <el-button plain type="primary" size="small" :icon="'Edit'" @click="handleEdit"/>
+                <el-popconfirm title="Are you sure to delete this?" @confirm="handleDelete">
+                  <template #reference>
+                    <el-button plain type="danger" size="small"
+                    >
+                      <el-icon>
+                        <Delete/>
+                      </el-icon>
+                    </el-button>
 
-              </template>
-            </el-popconfirm>
-          </el-button-group>
-        </template>
-      </el-table-column>
-    </el-table>
-    <!--    pages-->
-    <div style="margin: 10px">
-      <el-row :gutter="20">
-        <el-col :span="20">
-          <div>
+                  </template>
+                </el-popconfirm>
+              </el-button-group>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-main>
+      <el-footer style="margin: 10px; position: absolute; bottom: 0">
+        <el-row justify="space-between">
+          <el-col :span="22">
             <el-pagination :currentPage="currentPage" :page-size="pageSize" :page-sizes="[5, 10, 15]" :small="small"
                            layout="total, sizes, prev, pager, next, jumper" :total="totalPage"
                            @size-change="handleSizeChange"
                            @current-change="handleCurrentChange"/>
-          </div>
-        </el-col>
-        <el-col :span="4">
-          <div>
+          </el-col>
+          <el-col :span="2">
+
             <el-button type="primary" size="default">
               submit
               <el-icon class="el-icon--right">
                 <Check/>
               </el-icon>
             </el-button>
-          </div>
-        </el-col>
-      </el-row>
-    </div>
-
+          </el-col>
+        </el-row>
+      </el-footer>
+    </el-container>
 
     <!--    弹窗-上传问题-->
     <el-dialog v-model="dialogVisibleUpload" title="Upload question file" width="70%" :before-close="handleClose">
@@ -215,7 +206,7 @@ export default {
         detail: '',
         question: ' ',
         ansFilling: '',
-        ansMulti: '',
+        ansMulti: [],
         ansSingle: '',
       },
       search: "",
