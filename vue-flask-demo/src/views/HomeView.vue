@@ -221,6 +221,7 @@ export default {
     handleClose() {
       this.getQuestion()
       this.getQuestionNum()
+      this.dialogVisibleUpload = false
     },
     handleEditConfirm(index) {
       this.dialogVisibleEdit = false
