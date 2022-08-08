@@ -66,9 +66,9 @@
               ID
             </div>
           </template>
-          <el-tag size="small">
+
             {{ this.formDetail.ID }}
-          </el-tag>
+
         </el-descriptions-item>
         <el-descriptions-item>
           <template #label>
@@ -79,9 +79,9 @@
               Type
             </div>
           </template>
-
+          <el-tag size="small">
           {{ this.formDetail.type }}
-
+          </el-tag>
         </el-descriptions-item>
         <el-descriptions-item>
           <template #label>

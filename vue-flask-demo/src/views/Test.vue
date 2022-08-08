@@ -3,10 +3,10 @@
     <el-container style="flex-direction: column; padding: 10px 0">
       <el-header height="20px">
         <el-row type="flex">
-          <el-col :span="8" style="color: #409eff;font-weight: bolder; font-size: large">
+          <el-col :span="12" style="color: #409eff;font-weight: bolder; font-size: large">
             Choose questions to begin self-test :)
           </el-col>
-          <el-col :span="4"/>
+
           <el-col :span="12">
             <search-bar/>
           </el-col>
@@ -83,6 +83,19 @@
         size="default"
         border
     >
+      <el-descriptions-item>
+        <template #label>
+          <div class="cell-item">
+            <el-icon :style="iconStyle">
+              <office-building/>
+            </el-icon>
+            ID
+          </div>
+        </template>
+
+        {{ this.formDetail.ID }}
+
+      </el-descriptions-item>
       <el-descriptions-item>
         <template #label>
           <div class="cell-item">

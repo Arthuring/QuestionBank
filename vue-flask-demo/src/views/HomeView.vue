@@ -12,7 +12,15 @@
                 <UploadFilled/>
               </el-icon>
             </el-button>
+            <el-button circle type="primary" size="large" @click="getQuestion">
+              <el-icon size="large">
+                <Refresh/>
+              </el-icon>
+            </el-button>
           </el-col>
+<!--          <el-col :span="8">-->
+<!--            -->
+<!--          </el-col>-->
           <el-col :span="8">
             <span style="text-align: right; margin-left: 5px; color: #6db1f8; font-weight: bold ">
               Your questions are following <el-icon size="large">
@@ -52,11 +60,6 @@
 
                   </template>
                 </el-popconfirm>
-                <!--                <el-button plain type="danger" size="small" @click="handleDelete(scope.$index)">-->
-                <!--                  <el-icon>-->
-                <!--                    <Delete />-->
-                <!--                  </el-icon>-->
-                <!--                </el-button>-->
               </el-button-group>
             </template>
           </el-table-column>
@@ -72,7 +75,7 @@
           </el-col>
           <el-col :span="2">
 
-            <el-button type="primary" size="default">
+            <el-button type="primary" size="default" @click="handleSubmit">
               submit
               <el-icon class="el-icon--right">
                 <Check/>
@@ -98,6 +101,16 @@
           </div>
         </template>
       </el-upload>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button type="primary" @click="handleUpload" size="=default">
+            Finish
+            <el-icon class="el-icon--right" size="default">
+              <Check/>
+            </el-icon>
+          </el-button>
+        </span>
+      </template>
     </el-dialog>
     <!--    弹窗-编辑问题-->
     <el-dialog v-model="dialogVisibleEdit" title="Confirm your question" width="70%" :before-close="handleCloseEdit">
@@ -130,6 +143,18 @@
           </el-button>
         </span>
       </template>
+    </el-dialog>
+<!--    弹窗上传成功-->
+    <el-dialog v-model="dialogVisibleSuccess" title="" width="30%" :before-close="handleCloseEdit">
+      <el-result
+          icon="success"
+          title="submit succeed"
+          sub-title="You can see your questions in question list :)"
+      >
+        <template #extra>
+          <el-button type="primary" @click="dialogVisibleSuccess=false">great!</el-button>
+        </template>
+      </el-result>
     </el-dialog>
   </div>
 </template>
@@ -185,9 +210,10 @@ export default {
       search: "",
       currentPage: 1,
       pageSize: 10,
-      totalPage: 100,//TODO: 通过后端获取问题总数
+      totalPage: 100,
       dialogVisibleUpload: false,
       dialogVisibleEdit: false,
+      dialogVisibleSuccess:false,
       tableData: [
         // {
         //   ID: '777',
@@ -219,10 +245,23 @@ export default {
       this.getQuestion()
       this.getQuestionNum()
     },
+    handleUpload(){
+      this.refresh()
+      this.dialogVisibleUpload = false
+      //this.dialogVisibleSuccess = true
+    },
     handleClose() {
       this.getQuestion()
       this.getQuestionNum()
       this.dialogVisibleUpload = false
+    },
+    refresh(){
+      this.getQuestion()
+      this.getQuestionNum()
+    },
+    handleSubmit(){
+      this.tableData = []
+      this.dialogVisibleSuccess = true
     },
     handleEditConfirm(index) {
       this.dialogVisibleEdit = false
@@ -247,7 +286,8 @@ export default {
           })
           .then((responseJson) => {
                 console.log(responseJson)
-                //this.tableData = responseJson['example_questions']
+                this.dialogVisibleSuccess = true
+                this.refresh()
               }
           )
     },
@@ -261,7 +301,7 @@ export default {
       this.getQuestion()
       this.getQuestionNum()
     },
-    getQuestion() {
+    getQuestion() {//TODO：需要新增一个只get最新一次提交的question的函数
       fetch("http://127.0.0.1:5001/api/getQuestionOrdered", {
         method: "POST",
         body: JSON.stringify({
