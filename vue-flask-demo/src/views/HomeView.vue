@@ -74,13 +74,17 @@
                            @current-change="handleCurrentChange"/>
           </el-col>
           <el-col :span="2">
+            <el-popconfirm title="Are you sure to submit these questions?" @confirm="handleSubmit">
+              <template #reference>
+                <el-button type="primary" size="default">
+                  submit
+                  <el-icon class="el-icon--right">
+                    <Check/>
+                  </el-icon>
+                </el-button>
+              </template>
+            </el-popconfirm>
 
-            <el-button type="primary" size="default" @click="handleSubmit">
-              submit
-              <el-icon class="el-icon--right">
-                <Check/>
-              </el-icon>
-            </el-button>
           </el-col>
         </el-row>
       </el-footer>
@@ -106,7 +110,7 @@
           <el-button type="primary" @click="handleUpload" size="=default">
             Finish
             <el-icon class="el-icon--right" size="default">
-              <Check/>
+              <Finished/>
             </el-icon>
           </el-button>
         </span>
@@ -128,8 +132,8 @@
             <el-option label="multiple choice" value="multiple choice"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="Answer">
-          <el-input v-model="formConfirmQuestion.ansFilling" type="textarea"/>
+        <el-form-item label="Please input answer">
+          <el-input v-model="formConfirmQuestion.ans" type="textarea"/>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -145,17 +149,18 @@
       </template>
     </el-dialog>
 <!--    弹窗上传成功-->
-    <el-dialog v-model="dialogVisibleSuccess" title="" width="30%" :before-close="handleCloseEdit">
+    <el-dialog v-model="dialogVisibleSuccess" title="" width="50%" :before-close="handleCloseEdit">
       <el-result
           icon="success"
           title="submit succeed"
-          sub-title="You can see your questions in question list :)"
+          sub-title="You can see your questions in question list.\yeah!/"
       >
         <template #extra>
           <el-button type="primary" @click="dialogVisibleSuccess=false">great!</el-button>
         </template>
       </el-result>
     </el-dialog>
+
   </div>
 </template>
 
@@ -165,6 +170,7 @@
 import {TableColumnCtx} from 'element-plus/es/components/table/src/table-column/defaults'
 import {UploadFilled} from '@element-plus/icons-vue'
 import SearchBar from "@/components/SearchBar";
+import {ElMessage} from "element-plus";
 
 export default {
 
@@ -204,7 +210,7 @@ export default {
         type: ' ',
         description: '',
         question: ' ',
-        ansFilling: '请输入答案(不区分大小写，按字母顺序)',
+        ans: '',
         ID: -1
       },
       search: "",
@@ -237,7 +243,7 @@ export default {
       this.formConfirmQuestion.question = this.tableData[index].question
       this.formConfirmQuestion.description = this.tableData[index].description
       this.formConfirmQuestion.type = this.tableData[index].type
-      this.formConfirmQuestion.ansFilling = this.tableData[index].ans
+      this.formConfirmQuestion.ans = this.tableData[index].ans
       this.formConfirmQuestion.ID = this.tableData[index].ID
     },
     handleDelete(index) {
@@ -273,7 +279,7 @@ export default {
             'question': this.formConfirmQuestion.question,
             'description': this.formConfirmQuestion.description,
             'type': this.formConfirmQuestion.type,
-            'ans': this.formConfirmQuestion.ansFilling,
+            'ans': this.formConfirmQuestion.ans,
             'ID': this.formConfirmQuestion.ID
           }
         }),
@@ -286,8 +292,9 @@ export default {
           })
           .then((responseJson) => {
                 console.log(responseJson)
-                this.dialogVisibleSuccess = true
                 this.refresh()
+                ElMessage({message: 'Edit success. :)',
+                type: 'success',})
               }
           )
     },
