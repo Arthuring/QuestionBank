@@ -46,7 +46,7 @@
               </el-tag>
             </template>
           </el-table-column>
-          <el-table-column fixed="right" label="Operations" width="fixed">
+          <el-table-column fixed="right" label="Operations" width="120px">
             <template #default="scope">
               <el-button-group class="ml-4">
                 <el-button plain type="primary" size="small" :icon="'Edit'" @click="handleEdit(scope.$index)"/>
