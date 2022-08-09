@@ -43,9 +43,9 @@
           </el-table>
         </div>
         <div style="margin-top: 16px">
-          <el-row justify="space-between" type="flex" >
+          <el-row justify="space-between" type="flex">
             <el-col :span="8">
-              <el-button type="primary" >
+              <el-button type="primary">
                 Random
               </el-button>
               <el-input-number
@@ -58,10 +58,14 @@
               />
             </el-col>
             <el-col :span="8">
-              <el-button type="primary" style="float: right;" size="default">
-                Go to Test
-                <el-icon><DArrowRight /></el-icon>
-              </el-button>
+              <router-link to="/testing" style="text-decoration: none">
+                <el-button type="primary" style="float: right;" size="default">
+                  Go to Test
+                  <el-icon>
+                    <DArrowRight/>
+                  </el-icon>
+                </el-button>
+              </router-link>
             </el-col>
           </el-row>
         </div>
@@ -75,75 +79,75 @@
     </el-container>
 
     <el-dialog v-model="dialogVisibleDetail" title="Detail" width="70%" :before-close="handleCloseEdit">
-    <!--      TODO: 绑定变量-->
-    <el-descriptions
-        class="margin-top"
-        :title="this.formDetail.question"
-        :column="1"
-        size="default"
-        border
-    >
-      <el-descriptions-item>
-        <template #label>
-          <div class="cell-item">
-            <el-icon :style="iconStyle">
-              <office-building/>
-            </el-icon>
-            ID
-          </div>
-        </template>
+      <!--      TODO: 绑定变量-->
+      <el-descriptions
+          class="margin-top"
+          :title="this.formDetail.question"
+          :column="1"
+          size="default"
+          border
+      >
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">
+              <el-icon :style="iconStyle">
+                <office-building/>
+              </el-icon>
+              ID
+            </div>
+          </template>
 
-        {{ this.formDetail.ID }}
+          {{ this.formDetail.ID }}
 
-      </el-descriptions-item>
-      <el-descriptions-item>
-        <template #label>
-          <div class="cell-item">
-            <el-icon :style="iconStyle">
-              <office-building/>
-            </el-icon>
-            Type
-          </div>
-        </template>
-        <el-tag size="small">
-          {{ this.formDetail.type }}
-        </el-tag>
-      </el-descriptions-item>
-      <el-descriptions-item>
-        <template #label>
-          <div class="cell-item">
-            <el-icon :style="iconStyle">
-              <user/>
-            </el-icon>
-            Uploader
-          </div>
-        </template>
-        {{ this.formDetail.uploader }}
-      </el-descriptions-item>
-      <el-descriptions-item>
-        <template #label>
-          <div class="cell-item">
-            <el-icon :style="iconStyle">
-              <iphone/>
-            </el-icon>
-            Description
-          </div>
-        </template>
-        {{ this.formDetail.description }}
-      </el-descriptions-item>
-      <el-descriptions-item>
-        <template #label>
-          <div class="cell-item">
-            <el-icon :style="iconStyle">
-              <location/>
-            </el-icon>
-            Answer
-          </div>
-        </template>
-        {{ this.formDetail.ans }}
-      </el-descriptions-item>
-    </el-descriptions>
-  </el-dialog>
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">
+              <el-icon :style="iconStyle">
+                <office-building/>
+              </el-icon>
+              Type
+            </div>
+          </template>
+          <el-tag size="small">
+            {{ this.formDetail.type }}
+          </el-tag>
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">
+              <el-icon :style="iconStyle">
+                <user/>
+              </el-icon>
+              Uploader
+            </div>
+          </template>
+          {{ this.formDetail.uploader }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">
+              <el-icon :style="iconStyle">
+                <iphone/>
+              </el-icon>
+              Description
+            </div>
+          </template>
+          {{ this.formDetail.description }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">
+              <el-icon :style="iconStyle">
+                <location/>
+              </el-icon>
+              Answer
+            </div>
+          </template>
+          {{ this.formDetail.ans }}
+        </el-descriptions-item>
+      </el-descriptions>
+    </el-dialog>
   </div>
 </template>
 
@@ -178,7 +182,7 @@ export default {
   },
   data() {
     return {
-      randomNum:10,
+      randomNum: 10,
       dialogVisibleDetail: false,
       currentPage: 1,
       pageSize: 15,
@@ -214,7 +218,7 @@ export default {
       this.currentPage = number
       this.getQuestion()
     },
-    handleChangeRandom(number){
+    handleChangeRandom(number) {
       this.randomNum = number
     },
     handleDetail(index) {

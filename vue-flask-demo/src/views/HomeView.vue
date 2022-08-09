@@ -74,6 +74,7 @@
                            @current-change="handleCurrentChange"/>
           </el-col>
           <el-col :span="2">
+<!--            确认上传按钮，上传后清空页面中已有的问题-->
             <el-popconfirm title="Are you sure to submit these questions?" @confirm="handleSubmit">
               <template #reference>
                 <el-button type="primary" size="default">

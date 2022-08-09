@@ -4,6 +4,7 @@ import List from '../views/List.vue'
 import Test from '../views/Test.vue'
 import Analysis from "@/views/Analysis";
 import Login from "@/views/Login.vue"
+import Testing from "@/views/Testing";
 
 const routes = [
   {
@@ -39,6 +40,11 @@ const routes = [
     path:'/login',
     name: 'login',
     component: Login
+  },
+  {
+    path: '/testing',
+    name:'testing',
+    component: Testing
   }
 ]
 
