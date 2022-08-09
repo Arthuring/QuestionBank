@@ -268,10 +268,10 @@ export default {
       this.getQuestionNum(this.uuid,'temp')
     },
     handleSubmit(){
-      fetch("http://127.0.0.1:5001/api/delQuestion", {
+      fetch("http://127.0.0.1:5001/api/handleSubmit", {
         method: "POST",
         body: JSON.stringify({
-          "ID": ID,
+          'submit_ids':this.tableData,
           "uuid": -1,
           "status": 'all'
         }),

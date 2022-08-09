@@ -135,11 +135,13 @@ def setQuestion():
     }
     return jsonify(response)
 
+
+@app.route("/api/handleSubmit", methods=['POST'])
 def handleSubmit():
     data = request.get_json()
-    submit_id = data['submit_ids'];
+    submit_id = data['submit_ids']
     for id in submit_id:
-        db.submit_data(id)
+        db.submit_data(id['ID'])
     response = {
         'code': 'OK'
     }
