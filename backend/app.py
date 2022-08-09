@@ -49,10 +49,10 @@ def getQuestionOrdered():
         id = elem[0]
         question = json.loads(elem[1])
         question['ID'] = id
-        if(question['type'] != 'filling'):
-            question['description'] = question['question'] + '\n' + ' '.join([elem + question['choice'][elem] for elem in question['choice']])
-        else:
-            question['description'] = question['question']
+        # if(question['type'] != 'filling'):
+        #     question['description'] = question['question'] + '\n' + ' '.join([elem + question['choice'][elem] for elem in question['choice']])
+        # else:
+        #     question['description'] = question['question']
         # 依据前端是否需要答案，配置此项目
         # question.pop('ans')
         question_list.append(question)

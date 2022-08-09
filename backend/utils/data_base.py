@@ -126,7 +126,8 @@ class db_wrap:
             cur.execute("INSERT INTO QUESTION_TABLE (ID,QUESTION_JSON,UPLOADER,STATUS) VALUES (?,?,?,?)",(id,data,uploader,status))
         else:
             cur = self.sql_connection.cursor()
-            cur.execute("UPDATE QUESTION_TABLE SET QUESTION_JSON = ? SET STATUS = ? WHERE ID == ?",(data,status,data_id))
+            cur.execute("UPDATE QUESTION_TABLE SET QUESTION_JSON = ? WHERE ID == ?",(data,data_id))
+            cur.execute("UPDATE QUESTION_TABLE SET STATUS = ? WHERE ID == ?",(status,data_id))
         return data
 
     def submit_data(self,data_id):
@@ -134,6 +135,7 @@ class db_wrap:
         if(old_data != None):
             cur = self.sql_connection.cursor()
             cur.execute("UPDATE QUESTION_TABLE SET STATUS = ? WHERE ID == ?",('ready',data_id))
+        data = self.get_data_byid(data_id)
         return data
 
 

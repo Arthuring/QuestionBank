@@ -244,7 +244,9 @@ export default {
         method: "POST",
         body: JSON.stringify({
           "num": this.pageSize,
-          "offset": this.pageSize * (this.currentPage - 1)
+          "offset": this.pageSize * (this.currentPage - 1),
+          "uuid": -1,
+          "status": 'all'
         }),
         headers: {
           "Content-Type": "application/json"
