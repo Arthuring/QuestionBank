@@ -22,6 +22,9 @@ db  = db_wrap("my_question.db")
 @app.route("/api/getQuestionNum", methods=['POST'])
 def getQuestionNum():
     data = request.get_json()
+    uploader_uid = int(data['uuid']) # 如果uuid为-1, 就不限制题目的uuid
+    get_status = data['status'] # 如果状态为'temp',则获取等待提交的题目， 如果状态为'all', 则获取已经提交的题目
+    print(get_status)
     # 题库中题目的数量
     num = db.get_db_size()
     response = {
@@ -30,10 +33,12 @@ def getQuestionNum():
     }
     return jsonify(response)
 
-# 获取一定数量的题目信息
+# 获取一定数量的题目信息(已经确认提交的)
 @app.route("/api/getQuestionOrdered", methods=['POST'])
 def getQuestionOrdered():
     data = request.get_json()
+    uploader_uid = int(data['uuid']) # 如果uuid为-1, 就不限制题目的uuid
+    get_status = data['status'] # 如果状态为'temp',则获取等待提交的题目， 如果状态为'all', 则获取已经提交的题目
     # 数量，从前端请求中获取
     num = int(data['num'])
     # 开始的索引
@@ -60,9 +65,11 @@ def getQuestionOrdered():
 @app.route("/api/getQuestionOrdered", methods=['POST'])
 def getQuestionRandom():
     data = request.get_json()
+    uploader_uid = int(data['uuid']) # 如果uuid为-1, 就不限制题目的uuid
+    get_status = data['status'] # 如果状态为'temp',则获取等待提交的题目， 如果状态为'all', 则获取已经提交的题目
     # 数量，从前端请求中获取
     num = int(data['num'])
-    ret = db.get_data_random(num)
+    ret = db.get_data_random(num,status=get_status)
     question_list = []
     for elem in ret:
         id = elem[0]
@@ -96,7 +103,7 @@ def uploadFile():
         question_list = [get_parsered_question(question) for question in text]
         print(question_list)
         for question in question_list:
-            db.insert_data(question)
+            db.insert_data(question,status='temp')
     except:
         return jsonify({'code' : 'ERROR IN PARSING'})
 
@@ -123,6 +130,16 @@ def setQuestion():
     data_id = int(data['ID'])
     question_json = data['question_info']
     db.update_data_byid(data_id,question_json)
+    response = {
+        'code': 'OK'
+    }
+    return jsonify(response)
+
+def handleSubmit():
+    data = request.get_json()
+    submit_id = data['submit_ids'];
+    for id in submit_id:
+        db.submit_data(id)
     response = {
         'code': 'OK'
     }

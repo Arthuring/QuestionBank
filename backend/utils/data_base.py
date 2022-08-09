@@ -13,8 +13,8 @@ class db_wrap:
         if(os.path.isfile(database_name) == false):
             self.sql_connection = sqlite3.connect(database_name)
             data_base_cur = self.sql_connection.cursor()
-            data_base_cur.execute("CREATE TABLE QUESTION_TABLE(ID INT KEY NOT NULL, QUESTION_JSON TEXT NOT NULL)")
-            data_base_cur.execute("INSERT INTO QUESTION_TABLE (ID,QUESTION_JSON) VALUES (?,?)",(-1,'0',))
+            data_base_cur.execute("CREATE TABLE QUESTION_TABLE(ID INT KEY NOT NULL, QUESTION_JSON TEXT NOT NULL, UPLOADER TEXT NOT NULL, STATUS TEXT NOT NULL)")
+            data_base_cur.execute("INSERT INTO QUESTION_TABLE (ID,QUESTION_JSON,UPLOADER,STATUS) VALUES (?,?,\"SYSTEM\",\"READ_ONLY\")",(-1,'0',))
             self.sql_connection.commit()
             self.id_seq = 0
         else:
@@ -24,13 +24,26 @@ class db_wrap:
     def __del__(self):
         self.db_close()
 
-    def get_db_size(self):
+    def get_db_size(self,uploader = 'system',status = 'all'): # 如果状态为'temp',则获取等待提交的题目， 如果状态为'all', 则获取已经提交的题目
         cur = self.sql_connection.cursor()
-        cur.execute("SELECT count(*) FROM QUESTION_TABLE")
+        try :
+            cur.execute("DROP TABLE TEMP")
+        except:
+            print()
+        cur.execute("CREATE TABLE TEMP AS SELECT * FROM QUESTION_TABLE")
+        if(uploader != 'system'):
+            cur.execute("DELETE FROM TEMP WHERE UPLOADER != ?",(uploader,))
+        if(status != 'all'):
+            cur.execute("DELETE FROM TEMP WHERE STATUS != ?",(status,))
+        cur.execute("SELECT count(*) FROM TEMP")
         result = cur.fetchone()
+        try :
+            cur.execute("DROP TABLE TEMP")
+        except:
+            print()
         return result[0] - 1
 
-    def insert_data(self,data:str): #prefix: data is string
+    def insert_data(self,data:str,uploader = 'system',status = 'ready'): #prefix: data is string
         if(type(data) != str):
             if(type(data) == dict):
                 data = json.dumps(data)
@@ -39,7 +52,7 @@ class db_wrap:
                 return -1
         id = self.alloc_id()
         cur = self.sql_connection.cursor()
-        cur.execute("INSERT INTO QUESTION_TABLE (ID,QUESTION_JSON) VALUES (?,?)",(id,data,))
+        cur.execute("INSERT INTO QUESTION_TABLE (ID,QUESTION_JSON,UPLOADER,STATUS) VALUES (?,?,?,?)",(id,data,uploader,status,))
         return id
 
     def delete_data(self,data_id:int):
@@ -55,16 +68,42 @@ class db_wrap:
         data = cur.fetchone()
         return data
     
-    def get_data_range(self,index_begin:int,num:int):
+    def get_data_range(self,index_begin:int,num:int,uploader = 'system',status = 'all'):
         cur = self.sql_connection.cursor()
-        cur.execute("SELECT * FROM QUESTION_TABLE LIMIT ? Offset ?", (num,index_begin + 1,))
+        try :
+            cur.execute("DROP TABLE TEMP")
+        except:
+            print()
+        cur.execute("CREATE TABLE TEMP AS SELECT * FROM QUESTION_TABLE")
+        if(uploader != 'system'):
+            cur.execute("DELETE FROM TEMP WHERE UPLOADER != ?",(uploader,))
+        if(status != 'all'):
+            cur.execute("DELETE FROM TEMP WHERE STATUS != ?",(status,))
+        cur.execute("SELECT * FROM TEMP LIMIT ? Offset ?", (num,index_begin + 1,))
         data = cur.fetchall()
+        try :
+            cur.execute("DROP TABLE TEMP")
+        except:
+            print()
         return data
 
-    def get_data_random(self,num:int):
+    def get_data_random(self,num:int,uploader = 'system',status = 'all'):
         cur = self.sql_connection.cursor()
-        cur.execute("SELECT * FROM QUESTION_TABLE WHERE ID != -1 ORDER BY RANDOM() LIMIT ?", (num,))
+        try :
+            cur.execute("DROP TABLE TEMP")
+        except:
+            print()
+        cur.execute("CREATE TABLE TEMP AS SELECT * FROM QUESTION_TABLE")
+        if(uploader != 'system'):
+            cur.execute("DELETE FROM TEMP WHERE UPLOADER != ?",(uploader,))
+        if(status != 'all'):
+            cur.execute("DELETE FROM TEMP WHERE STATUS != ?",(status,))
+        cur.execute("SELECT * FROM TEMP WHERE ID != -1 ORDER BY RANDOM() LIMIT ?", (num,))
         data = cur.fetchall()
+        try :
+            cur.execute("DROP TABLE TEMP")
+        except:
+            print()
         return data
 
     def get_data_byindex(self,data_index:int):
@@ -73,7 +112,7 @@ class db_wrap:
         data = cur.fetchone()
         return data
 
-    def update_data_byid(self,data_id:int,data:str):
+    def update_data_byid(self,data_id:int,data:str,uploader = 'system',status = 'temp'):
         old_data = self.get_data_byid(data_id)
         if(type(data) != str):
             if(type(data) == dict):
@@ -84,11 +123,19 @@ class db_wrap:
         if(old_data == None):
             id = data_id
             cur = self.sql_connection.cursor()
-            cur.execute("INSERT INTO QUESTION_TABLE (ID,QUESTION_JSON) VALUES (?,?)",(id,data,))
+            cur.execute("INSERT INTO QUESTION_TABLE (ID,QUESTION_JSON,UPLOADER,STATUS) VALUES (?,?,?,?)",(id,data,uploader,status))
         else:
             cur = self.sql_connection.cursor()
-            cur.execute("UPDATE QUESTION_TABLE SET QUESTION_JSON = ? WHERE ID == ?",(data,data_id,))
+            cur.execute("UPDATE QUESTION_TABLE SET QUESTION_JSON = ? SET STATUS = ? WHERE ID == ?",(data,status,data_id))
         return data
+
+    def submit_data(self,data_id):
+        old_data = self.get_data_byid(data_id)
+        if(old_data != None):
+            cur = self.sql_connection.cursor()
+            cur.execute("UPDATE QUESTION_TABLE SET STATUS = ? WHERE ID == ?",('ready',data_id))
+        return data
+
 
     def get_max_id(self):
         if(self.id_seq != -1):

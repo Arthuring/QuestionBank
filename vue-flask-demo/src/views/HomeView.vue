@@ -267,6 +267,25 @@ export default {
       this.getQuestionNum()
     },
     handleSubmit(){
+      fetch("http://127.0.0.1:5001/api/delQuestion", {
+        method: "POST",
+        body: JSON.stringify({
+          "ID": ID,
+          "uuid": -1,
+          "status": 'all'
+        }),
+        headers: {
+          "Content-Type": "application/json"
+        },
+      }).then(res => res.json())
+          .catch(error => {
+            console.error('Error:', error)
+          })
+          .then((responseJson) => {
+                console.log(responseJson)
+                //this.tableData = responseJson['example_questions']
+              }
+          )
       this.tableData = []
       this.dialogVisibleSuccess = true
     },
@@ -282,7 +301,9 @@ export default {
             'type': this.formConfirmQuestion.type,
             'ans': this.formConfirmQuestion.ans,
             'ID': this.formConfirmQuestion.ID
-          }
+          },
+          "uuid": -1,
+          "status": 'all'
         }),
         headers: {
           "Content-Type": "application/json"
@@ -314,7 +335,9 @@ export default {
         method: "POST",
         body: JSON.stringify({
           "num": this.pageSize,
-          "offset": this.pageSize * (this.currentPage - 1)
+          "offset": this.pageSize * (this.currentPage - 1),
+          "uuid": -1,
+          "status": 'all'
         }),
         headers: {
           "Content-Type": "application/json"
@@ -333,7 +356,9 @@ export default {
       fetch("http://127.0.0.1:5001/api/getQuestionNum", {
         method: "POST",
         body: JSON.stringify({
-          "num": this.pageSize
+          "num": this.pageSize,
+          "uuid": -1,
+          "status": 'all'
         }),
         headers: {
           "Content-Type": "application/json"
@@ -353,6 +378,8 @@ export default {
         method: "POST",
         body: JSON.stringify({
           "ID": ID,
+          "uuid": -1,
+          "status": 'all'
         }),
         headers: {
           "Content-Type": "application/json"
