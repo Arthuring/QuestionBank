@@ -179,6 +179,7 @@ export default {
   name: "List",
   created() {
     this.getQuestion()
+    this.getQuestionNum(-1,'all')
   },
   methods: {
     handleSizeChange(number) {
@@ -198,6 +199,7 @@ export default {
       this.formDetail.ans = this.tableData[index].ans
       this.formDetail.ID = this.tableData[index].ID
     },
+
     getQuestion() {
       fetch("http://127.0.0.1:5001/api/getQuestionOrdered", {
         method: "POST",
@@ -219,7 +221,28 @@ export default {
                 this.tableData = responseJson['example_questions']
               }
           )
-    }
+    },
+    getQuestionNum(user, option) {
+      fetch("http://127.0.0.1:5001/api/getQuestionNum", {
+        method: "POST",
+        body: JSON.stringify({
+          "num": this.pageSize,
+          "uuid": user,
+          "status": option
+        }),
+        headers: {
+          "Content-Type": "application/json"
+        },
+      }).then(res => res.json())
+          .catch(error => {
+            console.error('Error:', error)
+          })
+          .then((responseJson) => {
+                console.log(responseJson)
+                this.totalPage = responseJson['num']
+              }
+          )
+    },
   }
 }
 </script>
