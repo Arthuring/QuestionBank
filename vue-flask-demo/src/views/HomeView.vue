@@ -12,15 +12,21 @@
                 <UploadFilled/>
               </el-icon>
             </el-button>
-            <el-button circle type="primary" size="large" @click="getQuestion(this.uuid, 'temp')">
+            <el-button circle type="primary" size="large" @click="handleAdd">
+              <el-icon size="large">
+                <Plus/>
+              </el-icon>
+            </el-button>
+            <el-button circle plain type="primary" size="large" @click="getQuestion(this.uuid, 'temp')">
               <el-icon size="large">
                 <Refresh/>
               </el-icon>
             </el-button>
+
           </el-col>
-<!--          <el-col :span="8">-->
-<!--            -->
-<!--          </el-col>-->
+          <!--          <el-col :span="8">-->
+          <!--            -->
+          <!--          </el-col>-->
           <el-col :span="8">
             <span style="text-align: right; margin-left: 5px; color: #6db1f8; font-weight: bold ">
               Your questions are following <el-icon size="large">
@@ -33,7 +39,12 @@
       <el-main style="overflow: auto">
         <!--    upload-->
         <el-table :data="tableData" max-height="500" stripe :table-layout="'auto'">
-          <el-table-column type="index" width="50" />
+          <template #empty>
+            <div class="flex items-center justify-center h-100%">
+              <el-empty/>
+            </div>
+          </template>
+          <el-table-column type="index" width="50"/>
           <el-table-column prop="question" label="Question"/>
           <el-table-column prop="type" label="Type" :filters="[
             { text: 'filling', value: 'filling' },
@@ -74,7 +85,7 @@
                            @current-change="handleCurrentChange"/>
           </el-col>
           <el-col :span="2">
-<!--            确认上传按钮，上传后清空页面中已有的问题-->
+            <!--            确认上传按钮，上传后清空页面中已有的问题-->
             <el-popconfirm title="Are you sure to submit these questions?" @confirm="handleSubmit">
               <template #reference>
                 <el-button type="primary" size="default">
@@ -117,6 +128,37 @@
         </span>
       </template>
     </el-dialog>
+    <el-dialog v-model="dialogVisibleAdd" title="Add your question" width="70%" :before-close="handleCloseEdit">
+      <el-form :model="formConfirmQuestion" :label-position="'left'" label-width="150px">
+        <el-form-item label="Question">
+          <el-input v-model="formConfirmQuestion.question"/>
+        </el-form-item>
+        <el-form-item label="detail">
+          <el-input v-model="formConfirmQuestion.description" type="textarea"/>
+        </el-form-item>
+        <el-form-item label="type">
+          <el-select v-model="formConfirmQuestion.type" placeholder="please select type">
+            <el-option label="filling" value="filling"/>
+            <el-option label="single choice" value="single choice"/>
+            <el-option label="multiple choice" value="multiple choice"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="Please input answer">
+          <el-input v-model="formConfirmQuestion.ans" type="textarea"/>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="dialogVisibleEdit = false">Cancel</el-button>
+          <el-button type="primary" @click="handleAddConfirm">
+            Confirm
+            <el-icon class="el-icon--right">
+              <Check/>
+            </el-icon>
+          </el-button>
+        </span>
+      </template>
+    </el-dialog>
     <!--    弹窗-编辑问题-->
     <el-dialog v-model="dialogVisibleEdit" title="Confirm your question" width="70%" :before-close="handleCloseEdit">
       <el-form :model="formConfirmQuestion" :label-position="'left'" label-width="150px">
@@ -149,7 +191,7 @@
         </span>
       </template>
     </el-dialog>
-<!--    弹窗上传成功-->
+    <!--    弹窗上传成功-->
     <el-dialog v-model="dialogVisibleSuccess" title="" width="50%" :before-close="handleCloseEdit">
       <el-result
           icon="success"
@@ -172,6 +214,7 @@ import {TableColumnCtx} from 'element-plus/es/components/table/src/table-column/
 import {UploadFilled} from '@element-plus/icons-vue'
 import SearchBar from "@/components/SearchBar";
 import {ElMessage} from "element-plus";
+import global from "@/components/Global";
 
 export default {
 
@@ -204,7 +247,7 @@ export default {
   },
   data() {
     return {
-      uuid:-1,
+      uuid: -1,
       formUpload: {
         file: '',
       },
@@ -220,8 +263,9 @@ export default {
       pageSize: 10,
       totalPage: 100,
       dialogVisibleUpload: false,
+      dialogVisibleAdd:false,
       dialogVisibleEdit: false,
-      dialogVisibleSuccess:false,
+      dialogVisibleSuccess: false,
       tableData: [
         // {
         //   ID: '777',
@@ -240,6 +284,13 @@ export default {
     addQuestion() {
       this.dialogVisibleUpload = true
     },
+    handleAdd(){
+      this.dialogVisibleAdd = true
+      this.formConfirmQuestion.question =''
+      this.formConfirmQuestion.description = ''
+      this.formConfirmQuestion.type = ''
+      this.formConfirmQuestion.ans = ''
+    },
     handleEdit(index) {
       this.dialogVisibleEdit = true
       this.formConfirmQuestion.question = this.tableData[index].question
@@ -253,25 +304,58 @@ export default {
       this.getQuestion(this.uuid, 'temp')
       this.getQuestionNum(this.uuid, 'temp')
     },
-    handleUpload(){
+    handleUpload() {
       this.refresh()
       this.dialogVisibleUpload = false
       //this.dialogVisibleSuccess = true
     },
+    handleAddConfirm(){
+      this.dialogVisibleAdd = false
+      fetch("http://127.0.0.1:5001/api/addQuestion", {
+        method: "POST",
+        body: JSON.stringify({
+          'question_info': {
+            'question': this.formConfirmQuestion.question,
+            'description': this.formConfirmQuestion.description,
+            'type': this.formConfirmQuestion.type,
+            'ans': this.formConfirmQuestion.ans,
+          },
+          "uuid": -1,
+        }),
+        headers: {
+          "Content-Type": "application/json"
+        },
+      }).then(res => res.json())
+          .catch(error => {
+            console.error('Error:', error)
+          })
+          .then((responseJson) => {
+                console.log(responseJson)
+                this.refresh()
+                ElMessage({
+                  message: 'Add success. :)',
+                  type: 'success',
+                })
+              }
+          )
+
+      this.getQuestion(global.uuid, 'temp')
+      this.getQuestionNum(global.uuid, 'temp')
+    },
     handleClose() {
-      this.getQuestion(this.uuid,'temp')
-      this.getQuestionNum(this.uuid,'temp')
+      this.getQuestion(this.uuid, 'temp')
+      this.getQuestionNum(this.uuid, 'temp')
       this.dialogVisibleUpload = false
     },
-    refresh(){
+    refresh() {
       this.getQuestion(this.uuid, 'temp')
-      this.getQuestionNum(this.uuid,'temp')
+      this.getQuestionNum(this.uuid, 'temp')
     },
-    handleSubmit(){
+    handleSubmit() {
       fetch("http://127.0.0.1:5001/api/handleSubmit", {
         method: "POST",
         body: JSON.stringify({
-          'submit_ids':this.tableData,
+          'submit_ids': this.tableData,
           "uuid": -1,
           "status": 'all'
         }),
@@ -316,8 +400,10 @@ export default {
           .then((responseJson) => {
                 console.log(responseJson)
                 this.refresh()
-                ElMessage({message: 'Edit success. :)',
-                type: 'success',})
+                ElMessage({
+                  message: 'Edit success. :)',
+                  type: 'success',
+                })
               }
           )
     },
@@ -331,7 +417,7 @@ export default {
       this.getQuestion(this.uuid, 'temp')
       this.getQuestionNum(this.uuid, 'temp')
     },
-    getQuestion(user ,option) {//TODO：需要新增一个只get最新一次提交的question的函数
+    getQuestion(user, option) {//TODO：需要新增一个只get最新一次提交的question的函数
       fetch("http://127.0.0.1:5001/api/getQuestionOrdered", {
         method: "POST",
         body: JSON.stringify({

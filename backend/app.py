@@ -88,6 +88,17 @@ def random_filename(filename):
     ext = os.path.splitext(filename)[-1]
     return uuid.uuid4().hex + ext
 
+@app.route("/api/addQuestion", methods=['POST'])
+def addQuestion():
+    data = request.get_json()
+    print(data)
+    question_json = data['question_info']
+    db.insert_data(question_json, status='temp')
+    response = {
+        'code': 'OK'
+    }
+    return jsonify(response)
+
 @app.route("/api/uploadFile", methods=['POST'])
 def uploadFile():
     file = request.files.get('file')
