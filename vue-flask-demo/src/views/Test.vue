@@ -61,14 +61,12 @@
               </router-link>
             </el-col>
             <el-col :span="8">
-              <router-link to="/testing" style="text-decoration: none">
               <el-button type="primary" style="float: right;" size="default" @click="handleRandomTest">
                 Random Test
                 <el-icon>
                   <DArrowRight/>
                 </el-icon>
               </el-button>
-              </router-link>
               <el-input-number
                   v-model="randomNum"
                   class="mx-4"
@@ -104,7 +102,7 @@
           <template #label>
             <div class="cell-item">
               <el-icon :style="iconStyle">
-                <office-building/>
+                <Paperclip />
               </el-icon>
               ID
             </div>
@@ -117,7 +115,7 @@
           <template #label>
             <div class="cell-item">
               <el-icon :style="iconStyle">
-                <office-building/>
+                <Filter/>
               </el-icon>
               Type
             </div>
@@ -141,23 +139,12 @@
           <template #label>
             <div class="cell-item">
               <el-icon :style="iconStyle">
-                <iphone/>
+                <ChatLineSquare />
               </el-icon>
               Description
             </div>
           </template>
           {{ this.formDetail.description }}
-        </el-descriptions-item>
-        <el-descriptions-item>
-          <template #label>
-            <div class="cell-item">
-              <el-icon :style="iconStyle">
-                <location/>
-              </el-icon>
-              Answer
-            </div>
-          </template>
-          {{ this.formDetail.ans }}
         </el-descriptions-item>
       </el-descriptions>
     </el-dialog>
@@ -167,6 +154,7 @@
 <script>
 import SearchBar from "@/components/SearchBar";
 import global from "@/components/Global";
+import router from "@/router";
 export default {
   components: {
     SearchBar
@@ -216,6 +204,7 @@ export default {
         description: "下列正确的是 A：xxx B: xxx C: xxx D:xxx",
         question: '下列正确的是',
         ans: 'ABC',
+        ID:0
       },
     }
   },
@@ -243,6 +232,7 @@ export default {
       this.formDetail.description = this.tableData[index].description
       this.formDetail.question = this.tableData[index].question
       this.formDetail.ans = this.tableData[index].ans
+      this.formDetail.ID = this.tableData[index].ID
     },
     handleSelectionChange(val){
       this.selected = val
@@ -268,6 +258,7 @@ export default {
           .then((responseJson) => {
                 console.log(responseJson)
                 global.testTable= responseJson['example_questions']
+                router.push('testing')
               }
           )
     },

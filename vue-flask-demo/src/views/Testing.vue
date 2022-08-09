@@ -179,6 +179,8 @@
 
 <script>
 import global from "@/components/Global";
+import {ElNotification} from "element-plus";
+import {h} from "vue";
 export default {
   name: "Testing",
   setup() {
@@ -208,6 +210,8 @@ export default {
       formResult: {},
       dialogVisibleExercise: false,
       canExercise: true,
+      questionNum: global.testTable.length,
+      correctNum:0,
       formExercise: {
         type: 'multiple choice',
         description: "下列正确的是 A：xxx B: xxx C: xxx D:xxx",
@@ -242,10 +246,15 @@ export default {
       for (var i=0; i<this.tableData.length; i+=1){
         if(this.tableData[i].userAns === this.tableData[i].ans){
           this.tableData[i].result = 'accepted'
+          this.correctNum += 1
         }else {
           this.tableData[i].result = 'wrong answer'
         }
       }
+      ElNotification({
+        title: 'Test result',
+        message: h('i', { style: 'color: teal' }, 'you got ' + this.correctNum + '/' + this.questionNum + ' in this test. hover to see detail'),
+      })
     }
   },
 
