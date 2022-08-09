@@ -48,6 +48,7 @@ def get_parsered_question(question:str):
     if(type_str == '填空题'):
         result['type'] = 'filling'
         result['question'] = ' '.join(question_str)
+        result['description'] = result['question']
     elif(type_str == '单选'):
         if(len(question_str) != len(controlling_flag) - 1 or len(question_str) == 1):
             print("Unexpected single choice question!")
@@ -59,6 +60,7 @@ def get_parsered_question(question:str):
         for i in range(1,len(question_str)):
             choice[controlling_flag[i]] = question_str[i]
         result['choice'] = choice
+        result['description'] = result['question'] + '\n' + ' '.join([elem + result['choice'][elem] for elem in result['choice']])
     elif(type_str == '多选'):
         if(len(question_str) != len(controlling_flag) - 1 or len(question_str) == 1):
             print("Unexpected single choice question!")
@@ -70,6 +72,7 @@ def get_parsered_question(question:str):
         for i in range(1,len(question_str)):
             choice[controlling_flag[i]] = question_str[i]
         result['choice'] = choice
+        result['description'] = result['question'] + '\n' + ' '.join([elem + result['choice'][elem] for elem in result['choice']])
     else:
         print('Unexpected question type')
         return None
