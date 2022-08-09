@@ -125,12 +125,12 @@
       </el-footer>
     </el-container>
 <!--    弹窗--回答问题-->
-    <el-dialog v-model="dialogVisibleExercise" title="Exercise" width="70%" :before-close="handleCloseEdit">
+    <el-dialog v-model="dialogVisibleExercise" title="Exercise" width="50%" :before-close="handleCloseEdit">
       <el-descriptions
           class="margin-top"
           :title="this.formExercise.question"
-          :column="1"
-          size="default"
+          :column="2"
+          size="small"
       >
         <el-descriptions-item>
           <template #label>

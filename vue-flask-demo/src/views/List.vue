@@ -61,7 +61,7 @@
           <template #label>
             <div class="cell-item">
               <el-icon :style="iconStyle">
-                <office-building/>
+                <Paperclip />
               </el-icon>
               ID
             </div>
@@ -74,7 +74,7 @@
           <template #label>
             <div class="cell-item">
               <el-icon :style="iconStyle">
-                <office-building/>
+                <Filter/>
               </el-icon>
               Type
             </div>
@@ -98,7 +98,7 @@
           <template #label>
             <div class="cell-item">
               <el-icon :style="iconStyle">
-                <iphone/>
+                <ChatLineSquare />
               </el-icon>
               Description
             </div>
@@ -109,7 +109,7 @@
           <template #label>
             <div class="cell-item">
               <el-icon :style="iconStyle">
-                <location/>
+                <MagicStick />
               </el-icon>
               Answer
             </div>

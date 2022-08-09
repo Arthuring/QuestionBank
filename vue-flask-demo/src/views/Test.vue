@@ -14,7 +14,13 @@
       </el-header>
       <el-main style="overflow: auto">
         <div>
-          <el-table :data="tableData" max-height="550" stripe :table-layout="'auto'">
+          <el-table
+              :data="tableData"
+              max-height="550"
+              stripe
+              :table-layout="'auto'"
+              @selection-change="handleSelectionChange"
+          >
             <el-table-column type="selection" width="55"/>
             <el-table-column prop="ID" label="ID" sortable width="auto"/>
             <el-table-column prop="uploader" label="uploader"/>
@@ -188,6 +194,7 @@ export default {
       pageSize: 15,
       totalPage: 100,//TODO: 通过后端获取问题总数
       tableData: [],
+      selected:[],
       formConfirmQuestion: {
         type: ' ',
         detail: '',
@@ -228,6 +235,9 @@ export default {
       this.formDetail.description = this.tableData[index].description
       this.formDetail.question = this.tableData[index].question
       this.formDetail.ans = this.tableData[index].ans
+    },
+    handleSelectionChange(val){
+      this.selected = val
     },
     getQuestion() {
       fetch("http://127.0.0.1:5001/api/getQuestionOrdered", {

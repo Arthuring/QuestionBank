@@ -33,7 +33,7 @@
       <el-main style="overflow: auto">
         <!--    upload-->
         <el-table :data="tableData" max-height="500" stripe :table-layout="'auto'">
-          <el-table-column prop="ID" label="ID" sortable width="auto"/>
+          <el-table-column type="index" width="50" />
           <el-table-column prop="question" label="Question"/>
           <el-table-column prop="type" label="Type" :filters="[
             { text: 'filling', value: 'filling' },
