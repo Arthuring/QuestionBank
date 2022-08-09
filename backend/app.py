@@ -43,7 +43,7 @@ def getQuestionOrdered():
     num = int(data['num'])
     # 开始的索引
     offset = int(data['offset'])
-    ret = db.get_data_range(offset,num)
+    ret = db.get_data_range(offset,num,status=get_status)
     question_list = []
     for elem in ret:
         id = elem[0]
