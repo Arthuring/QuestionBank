@@ -5,7 +5,7 @@
         <el-row type="flex">
           <el-col :span="8">
             <router-link to="/test" style="text-decoration: none">
-              <el-button plain type="primary" size="small">
+              <el-button plain type="primary" size="default">
                 <el-icon class="el-icon--left">
                   <DArrowLeft/>
                 </el-icon>
@@ -50,11 +50,7 @@
             </template>
           </el-table-column>
 <!--          表格-提交后显示结果-->
-          <el-table-column fixed="right" prop="result" label="Result" width="120px" :fliters="[
-              {text:'accepted', value:'accepted'},
-              {text:'wrong answer', value: 'wrong answer'},
-              {text: 'no info', value: ''},
-          ]" :filter-method="filterResult" filter-placement="bottom-end">
+          <el-table-column fixed="right" prop="result" label="Result" width="120px">
             <template #default="scope">
               <el-popover
                   placement="left-start"
@@ -114,7 +110,7 @@
 <!--        按钮-完成测试-->
         <el-popconfirm title="Are you sure to submit your answer?" @confirm="handleFinishTest">
           <template #reference>
-            <el-button type="primary" size="default" style="float: right;padding: 10px">
+            <el-button type="primary" size="default" style="float: right;padding: 10px" :disabled="!canExercise">
               I finished
               <el-icon class="el-icon--right">
                 <Finished/>
