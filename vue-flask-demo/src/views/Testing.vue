@@ -14,7 +14,7 @@
             </router-link>
           </el-col>
           <el-col :span="16" style="color: #409eff;font-weight: bolder; font-size: large">
-            Exercise begin!
+            {{this.headerText}}
           </el-col>
         </el-row>
       </el-header>
@@ -204,6 +204,7 @@ export default {
   data() {
     return {
       formResult: {},
+      headerText:'Test begin!',
       dialogVisibleExercise: false,
       canExercise: true,
       questionNum: global.testTable.length,
@@ -247,6 +248,7 @@ export default {
           this.tableData[i].result = 'wrong answer'
         }
       }
+      this.headerText = 'Test end, congratulation :)'
       ElNotification({
         title: 'Test result',
         message: h('i', { style: 'color: teal' }, 'you got ' + this.correctNum + '/' + this.questionNum + ' in this test. hover to see detail'),
