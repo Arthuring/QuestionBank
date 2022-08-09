@@ -246,7 +246,7 @@ export default {
           "num": this.pageSize,
           "offset": this.pageSize * (this.currentPage - 1),
           "uuid": -1,
-          "status": 'all'
+          "status": 'ready'
         }),
         headers: {
           "Content-Type": "application/json"
