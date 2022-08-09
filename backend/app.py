@@ -62,7 +62,7 @@ def getQuestionOrdered():
     }
     return jsonify(response)
 
-@app.route("/api/getQuestionOrdered", methods=['POST'])
+@app.route("/api/getQuestionRandom", methods=['POST'])
 def getQuestionRandom():
     data = request.get_json()
     uploader_uid = int(data['uuid']) # 如果uuid为-1, 就不限制题目的uuid
@@ -73,10 +73,10 @@ def getQuestionRandom():
     question_list = []
     for elem in ret:
         id = elem[0]
-        question = elem[1]
-        question['id'] = id
+        question = json.loads(elem[1])
+        question['ID'] = id
         # 依据前端是否需要答案，配置此项目
-        question.pop('ans')
+       #  question.pop('ans')
         question_list.append(question)
     response = {
         "example_questions": question_list,
