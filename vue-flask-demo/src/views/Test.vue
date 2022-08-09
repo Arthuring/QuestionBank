@@ -51,33 +51,40 @@
         <div style="margin-top: 16px">
           <el-row justify="space-between" type="flex">
             <el-col :span="8">
-              <el-button type="primary">
-                Random
+              <router-link to="/testing" style="text-decoration: none">
+                <el-button plain type="primary" size="default" @click="handleGoTest">
+                  Test Selected
+                  <el-icon>
+                    <ArrowRight/>
+                  </el-icon>
+                </el-button>
+              </router-link>
+            </el-col>
+            <el-col :span="8">
+              <router-link to="/testing" style="text-decoration: none">
+              <el-button type="primary" style="float: right;" size="default" @click="handleRandomTest">
+                Random Test
+                <el-icon>
+                  <DArrowRight/>
+                </el-icon>
               </el-button>
+              </router-link>
               <el-input-number
                   v-model="randomNum"
                   class="mx-4"
                   :min="1"
-                  :max="10"
+                  :max="this.totalPage < 10 ? this.totalPage : 10"
                   controls-position="right"
                   @change="handleChangeRandom"
+                  style="float: right;"
+                  size="default"
               />
-            </el-col>
-            <el-col :span="8">
-              <router-link to="/testing" style="text-decoration: none">
-                <el-button type="primary" style="float: right;" size="default">
-                  Go to Test
-                  <el-icon>
-                    <DArrowRight/>
-                  </el-icon>
-                </el-button>
-              </router-link>
             </el-col>
           </el-row>
         </div>
       </el-main>
       <el-footer style="position: absolute; bottom: 0">
-        <el-pagination :currentPage="currentPage" :page-size="pageSize" :page-sizes="[5, 10, 15]" :small="small"
+        <el-pagination :currentPage="currentPage" :page-size="pageSize" :page-sizes="[5, 10, 15]"
                        layout="total, sizes, prev, pager, next, jumper" :total="totalPage"
                        @size-change="handleSizeChange"
                        @current-change="handleCurrentChange"/>
@@ -159,7 +166,7 @@
 
 <script>
 import SearchBar from "@/components/SearchBar";
-
+import global from "@/components/Global";
 export default {
   components: {
     SearchBar
@@ -188,11 +195,11 @@ export default {
   },
   data() {
     return {
-      randomNum: 10,
+      randomNum: 1,
       dialogVisibleDetail: false,
       currentPage: 1,
       pageSize: 15,
-      totalPage: 100,//TODO: 通过后端获取问题总数
+      totalPage: 100,
       tableData: [],
       selected:[],
       formConfirmQuestion: {
@@ -215,6 +222,7 @@ export default {
   name: "List",
   created() {
     this.getQuestion()
+    this.getQuestionNum(-1, 'ready')
   },
   methods: {
     handleSizeChange(number) {
@@ -239,6 +247,30 @@ export default {
     handleSelectionChange(val){
       this.selected = val
     },
+    handleGoTest(){
+      global.testTable = this.selected
+    },
+    handleRandomTest(){
+      fetch("http://127.0.0.1:5001/api/getQuestionRandom", {
+        method: "POST",
+        body: JSON.stringify({
+          "num": this.randomNum,
+          "uuid": -1,
+          "status": 'ready'
+        }),
+        headers: {
+          "Content-Type": "application/json"
+        },
+      }).then(res => res.json())
+          .catch(error => {
+            console.error('Error:', error)
+          })
+          .then((responseJson) => {
+                console.log(responseJson)
+                global.testTable= responseJson['example_questions']
+              }
+          )
+    },
     getQuestion() {
       fetch("http://127.0.0.1:5001/api/getQuestionOrdered", {
         method: "POST",
@@ -246,7 +278,7 @@ export default {
           "num": this.pageSize,
           "offset": this.pageSize * (this.currentPage - 1),
           "uuid": -1,
-          "status": 'all'
+          "status": 'ready'
         }),
         headers: {
           "Content-Type": "application/json"
@@ -260,7 +292,28 @@ export default {
                 this.tableData = responseJson['example_questions']
               }
           )
-    }
+    },
+    getQuestionNum(user, option) {
+      fetch("http://127.0.0.1:5001/api/getQuestionNum", {
+        method: "POST",
+        body: JSON.stringify({
+          "num": this.pageSize,
+          "uuid": user,
+          "status": option
+        }),
+        headers: {
+          "Content-Type": "application/json"
+        },
+      }).then(res => res.json())
+          .catch(error => {
+            console.error('Error:', error)
+          })
+          .then((responseJson) => {
+                console.log(responseJson)
+                this.totalPage = responseJson['num']
+              }
+          )
+    },
   }
 }
 </script>

@@ -178,6 +178,7 @@
 </template>
 
 <script>
+import global from "@/components/Global";
 export default {
   name: "Testing",
   setup() {
@@ -218,35 +219,7 @@ export default {
       formUserAns: {
         ans: ''
       },
-      tableData: [
-        {
-          ID: '123',
-          type: 'multiple choice',
-          question: 'No. 189, Grove St, Los Angeles',
-          description: 'which is ...? A:..B:..C:..D:..',
-          result: 'no info',
-          userAns: '',
-          ans: 'ABC',
-        },
-        {
-          ID: '456',
-          type: 'single choice',
-          question: 'which is ...?',
-          description: 'which is ...? A:..B:..C:..D:..',
-          result: 'no info',
-          userAns: '',
-          ans: 'A',
-        },
-        {
-          ID: '777',
-          type: 'filling',
-          question: 'filling question______',
-          description: 'which is ...? A:..B:..C:..D:..',
-          result: 'no info',
-          userAns: '',
-          ans: 'filling question',
-        },
-      ]
+      tableData: global.testTable,
     }
   },
   methods: {
