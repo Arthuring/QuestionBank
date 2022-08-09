@@ -12,7 +12,7 @@
                 <UploadFilled/>
               </el-icon>
             </el-button>
-            <el-button circle type="primary" size="large" @click="getQuestion">
+            <el-button circle type="primary" size="large" @click="getQuestion(this.uuid, 'temp')">
               <el-icon size="large">
                 <Refresh/>
               </el-icon>
@@ -204,6 +204,7 @@ export default {
   },
   data() {
     return {
+      uuid:-1,
       formUpload: {
         file: '',
       },
@@ -232,8 +233,8 @@ export default {
     }
   },
   created() {
-    this.getQuestion()
-    this.getQuestionNum()
+    this.getQuestion(this.uuid, 'temp')
+    this.getQuestionNum(this.uuid, 'temp')
   },
   methods: {
     addQuestion() {
@@ -249,8 +250,8 @@ export default {
     },
     handleDelete(index) {
       this.delQuestion(this.tableData[index]['ID'])
-      this.getQuestion()
-      this.getQuestionNum()
+      this.getQuestion(this.uuid, 'temp')
+      this.getQuestionNum(this.uuid, 'temp')
     },
     handleUpload(){
       this.refresh()
@@ -258,13 +259,13 @@ export default {
       //this.dialogVisibleSuccess = true
     },
     handleClose() {
-      this.getQuestion()
-      this.getQuestionNum()
+      this.getQuestion(this.uuid,'temp')
+      this.getQuestionNum(this.uuid,'temp')
       this.dialogVisibleUpload = false
     },
     refresh(){
-      this.getQuestion()
-      this.getQuestionNum()
+      this.getQuestion(this.uuid, 'temp')
+      this.getQuestionNum(this.uuid,'temp')
     },
     handleSubmit(){
       fetch("http://127.0.0.1:5001/api/delQuestion", {
@@ -322,22 +323,22 @@ export default {
     },
     handleSizeChange(number) {
       this.pageSize = number
-      this.getQuestion()
-      this.getQuestionNum()
+      this.getQuestion(this.uuid, 'temp')
+      this.getQuestionNum(this.uuid, 'temp')
     },
     handleCurrentChange(number) {
       this.currentPage = number
-      this.getQuestion()
-      this.getQuestionNum()
+      this.getQuestion(this.uuid, 'temp')
+      this.getQuestionNum(this.uuid, 'temp')
     },
-    getQuestion() {//TODO：需要新增一个只get最新一次提交的question的函数
+    getQuestion(user ,option) {//TODO：需要新增一个只get最新一次提交的question的函数
       fetch("http://127.0.0.1:5001/api/getQuestionOrdered", {
         method: "POST",
         body: JSON.stringify({
           "num": this.pageSize,
           "offset": this.pageSize * (this.currentPage - 1),
-          "uuid": -1,
-          "status": 'all'
+          "uuid": user,
+          "status": option
         }),
         headers: {
           "Content-Type": "application/json"
@@ -352,13 +353,13 @@ export default {
               }
           )
     },
-    getQuestionNum() {
+    getQuestionNum(user, option) {
       fetch("http://127.0.0.1:5001/api/getQuestionNum", {
         method: "POST",
         body: JSON.stringify({
           "num": this.pageSize,
-          "uuid": -1,
-          "status": 'all'
+          "uuid": user,
+          "status": option
         }),
         headers: {
           "Content-Type": "application/json"
