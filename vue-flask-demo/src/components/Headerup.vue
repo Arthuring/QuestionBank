@@ -7,14 +7,15 @@
       <el-dropdown>
     <span class="el-dropdown-link">
       <br>
-      User name
+      {{ this.userName }}
       <el-icon class="el-icon--right">
         <arrow-down/>
       </el-icon>
     </span>
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item><el-icon class="small"> <User /></el-icon>Information</el-dropdown-item>
+            <el-dropdown-item @click="handleItemOne"><el-icon class="small"> <User /></el-icon>
+              {{ this.itemText }}</el-dropdown-item>
             <el-dropdown-item> <el-icon class="small"> <Setting /></el-icon>Settings</el-dropdown-item>
           </el-dropdown-menu>
         </template>
@@ -24,8 +25,23 @@
 </template>
 
 <script>
+import global from "@/components/Global";
+import router from "@/router";
 export default {
-  name: "Headerup"
+  name: "Headerup",
+  data(){
+    return{
+      userName: global.userName,
+      itemText:global.userName === 'Unsigned' ? 'Login' : 'My space',
+    }
+  },
+  methods:{
+    handleItemOne(){
+      if(global.uuid === -1){
+        router.push('login')
+      }
+    },
+  },
 }
 </script>
 

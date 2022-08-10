@@ -22,61 +22,72 @@
       <!--        &lt;!&ndash;          <el-menu-item index="1-4-1">item one</el-menu-item>&ndash;&gt;-->
       <!--        &lt;!&ndash;        </el-sub-menu>&ndash;&gt;-->
       <!--      </el-sub-menu>-->
-      <router-link to="/upload" style="text-decoration: none">
-        <el-menu-item index="1">
 
+      <el-menu-item index="1" @click="handleAside('upload')">
+        <el-icon>
           <el-icon>
-            <el-icon>
-              <Upload/>
-            </el-icon>
+            <Upload/>
           </el-icon>
-          <span>Upload Question</span>
-        </el-menu-item>
-      </router-link>
-      <router-link to="/list" style="text-decoration: none">
-        <el-menu-item index="2">
+        </el-icon>
+        <span>Upload Question</span>
+      </el-menu-item>
+
+
+      <el-menu-item index="2" @click="handleAside('list')">
+        <el-icon>
+          <Document/>
+        </el-icon>
+        <span>Question List</span>
+      </el-menu-item>
+
+
+      <el-menu-item index="3" @click="handleAside('test')">
+        <el-icon>
+          <DocumentChecked/>
+        </el-icon>
+        <span>Test</span>
+      </el-menu-item>
+
+
+      <el-menu-item index="4" @click="handleAside('analysis')">
+        <el-icon>
           <el-icon>
-            <Document/>
+            <DataLine/>
           </el-icon>
-          <span>Question List</span>
-        </el-menu-item>
-      </router-link>
-      <router-link to="/test" style="text-decoration: none">
-        <el-menu-item index="3">
-          <el-icon>
-            <DocumentChecked/>
-          </el-icon>
-          <span>Test</span>
-        </el-menu-item>
-      </router-link>
-      <router-link to="/analysis" style="text-decoration: none">
-        <el-menu-item index="4">
-          <el-icon>
-            <el-icon>
-              <DataLine/>
-            </el-icon>
-          </el-icon>
-          <span>Analysis</span>
-        </el-menu-item>
-      </router-link>
-      <router-link to="/login" style="text-decoration: none">
-        <el-menu-item index="5">
-          <el-icon>
-            <el-icon>
-              <DataLine/>
-            </el-icon>
-          </el-icon>
-          <span>Login</span>
-        </el-menu-item>
-      </router-link>
+        </el-icon>
+        <span>Analysis</span>
+      </el-menu-item>
+
     </el-menu>
 
   </div>
 </template>
 
 <script>
+import global from "@/components/Global";
+import router from "@/router";
+import {ElMessage} from "element-plus";
+
 export default {
-  name: "Aside"
+  name: "Aside",
+  data() {
+    return {
+      logged: !(global.uuid === -1),
+      visibleLogged: false
+    }
+  },
+  methods: {
+    handleAside(rout) {
+      if (this.logged) {
+        router.push(rout)
+      } else {
+        ElMessage({
+          showClose: true,
+          message: 'Please login first ',
+        })
+      }
+    }
+  }
 }
 </script>
 

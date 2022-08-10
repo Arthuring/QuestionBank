@@ -1,17 +1,22 @@
 <template>
-  <div style="padding: 10px 0;">
+  <div :style="background">
     <el-container style="flex-direction: column;">
-      <el-header style="height: 70px">
-        <div style="font-weight: bolder; color:#79bbff;font-size: large; text-align:center;">
-          Login
+      <el-header style="height: 170px">
+        <div style="font-weight: bolder; color:#f8ffff;font-size: xxx-large; text-align: center; padding: 130px 0">
+          Welcome to Question Bank :)
         </div>
       </el-header>
       <el-main style="overflow: auto">
-        <div style="width:100%; float:left">
-          <div style="height:30px;width:300px;float:left;"></div>
-          <div class="mt-4" style="width:50%; text-alinn:center; float:left">
-            <el-input v-model="input1" placeholder="请输入用户名">
-              <template #prepend>用户名</template>
+        <div style="font-weight: bolder; color:#f7f8ff; text-align:center; padding-top: 50px; padding-bottom: 30px;
+         font-size: x-large">
+          Login
+        </div>
+
+        <div style="width:100%; float:left; text-align: center" >
+
+          <div class="mt-4" style="width:100%; text-align:center; float:left; ">
+            <el-input v-model="inputUsername" placeholder="Please input username" style="width: 500px">
+              <template #prepend>username</template>
             </el-input>
           </div>
         </div>
@@ -23,14 +28,29 @@
         </div>
 
         <div style="width:100%; float:left">
-          <div style="height:30px;width:300px;float:left;"></div>
-          <div class="mt-4" style="width:50%; text-alinn:center; float:left">
-              <el-input v-model="input" type="password" placeholder="请输入密码" show-password>
-                <template #prepend>密码</template>
-              </el-input>
+<!--          <div style="height:30px;width:300px;float:left;"></div>-->
+          <div class="mt-4" style="width:100%; text-align:center; ">
+            <el-input v-model="inputPassword" style="width: 500px" type="password" placeholder="please input password" show-password>
+              <template #prepend>password</template>
+            </el-input>
+
+          </div>
+          <div class="mt-4" style="width:100%; text-align:center; ">
+            <el-button
+                :type="'primary'"
+                plain
+                style="margin-top: 50px"
+            >Sign in</el-button
+            >
           </div>
         </div>
+
       </el-main>
+      <el-footer style="text-align: center">
+
+        <el-button size="large" plain type="primary" color="dodgerblue"> GO!<el-icon class="el-icon--right" size="large"><Promotion /></el-icon></el-button>
+
+      </el-footer>
     </el-container>
 
   </div>
@@ -84,6 +104,25 @@ onMounted(() => {
 </script> -->
 <script>
 export default {
-  name: "Login"
+  name: "Login",
+  data() {
+    return {
+      background: {
+        // 背景图片地址
+        backgroundImage: 'url(' + require('@/assets/cool-background.svg') + ')',
+        // 背景图片是否重复
+        backgroundRepeat: 'no-repeat',
+        // 背景图片大小
+        backgroundSize: 'cover',
+        // 背景颜色
+        backgroundColor: '#ffffff',
+        // 背景图片位置
+        backgroundPosition: 'center top'
+      },
+      inputUsername: '',
+      inputPassword: ''
+    }
+  },
 }
 </script>
+

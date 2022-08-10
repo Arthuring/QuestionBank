@@ -38,7 +38,7 @@
       </el-header>
       <el-main style="overflow: auto">
         <!--    upload-->
-        <el-table :data="tableData" max-height="500" stripe :table-layout="'auto'">
+        <el-table :data="tableData" max-height="500"  stripe :table-layout="'auto'">
           <template #empty>
             <div class="flex items-center justify-center h-100%">
               <el-empty/>
