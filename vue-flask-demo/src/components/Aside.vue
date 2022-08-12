@@ -72,13 +72,13 @@ export default {
   name: "Aside",
   data() {
     return {
-      logged: !(global.uuid === -1),
-      visibleLogged: false
+      logged: global.uuid,
+      visibleLogged: this.logged
     }
   },
   methods: {
     handleAside(rout) {
-      if (this.logged) {
+      if (!(global.uuid === -1)) {
         router.push(rout)
       } else {
         ElMessage({

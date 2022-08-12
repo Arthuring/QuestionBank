@@ -40,6 +40,7 @@
                 :type="'primary'"
                 plain
                 style="margin-top: 50px"
+                @click="dialogVisibleSign=true"
             >Sign in</el-button
             >
           </div>
@@ -48,61 +49,51 @@
       </el-main>
       <el-footer style="text-align: center">
 
-        <el-button size="large" plain type="primary" color="dodgerblue"> GO!<el-icon class="el-icon--right" size="large"><Promotion /></el-icon></el-button>
+        <el-button size="large" plain type="primary" color="dodgerblue" @click="handleLogin">
+          GO!
+          <el-icon class="el-icon--right" size="large"><Promotion /></el-icon></el-button>
 
       </el-footer>
     </el-container>
+<!--    注册弹窗-->
+    <el-dialog v-model="dialogVisibleSign" title="Sign In" width="70%" :before-close="handleCloseEdit">
+      <el-form
+          ref="ruleFormRef"
+          :model="formSignIn"
+          status-icon
+          label-width="120px"
+          class="demo-ruleForm"
+      >
+        <el-form-item label="Username" prop="username">
+          <el-input v-model.number="formSignIn.userName" />
+        </el-form-item>
+        <el-form-item label="Password" prop="pass">
+          <el-input v-model="formSignIn.password" type="password" autocomplete="off" />
+        </el-form-item>
+        <el-form-item label="Confirm" prop="checkPassword">
+          <el-input
+              v-model="formSignIn.checkPassword"
+              type="password"
+              autocomplete="off"
+          />
+        </el-form-item>
 
+        <el-form-item>
+          <el-button type="primary" @click="submitForm()"
+          >Submit <el-icon class="el-icon--right" size="large"><Promotion /></el-icon></el-button
+          >
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
-<!-- <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
-
-interface RestaurantItem {
-  value: string
-  link: string
-}
-
-const state1 = ref('')
-const state2 = ref('')
-
-const restaurants = ref<RestaurantItem[]>([])
-const querySearch = (queryString: string, cb: any) => {
-  const results = queryString
-    ? restaurants.value.filter(createFilter(queryString))
-    : restaurants.value
-  // call callback function to return suggestions
-  cb(results)
-}
-const createFilter = (queryString: string) => {
-  return (restaurant: RestaurantItem) => {
-    return (
-      restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0
-    )
-  }
-}
-const loadAll = () => {
-  return [
-    { value: 'vue', link: 'https://github.com/vuejs/vue' },
-    { value: 'element', link: 'https://github.com/ElemeFE/element' },
-    { value: 'cooking', link: 'https://github.com/ElemeFE/cooking' },
-    { value: 'mint-ui', link: 'https://github.com/ElemeFE/mint-ui' },
-    { value: 'vuex', link: 'https://github.com/vuejs/vuex' },
-    { value: 'vue-router', link: 'https://github.com/vuejs/vue-router' },
-    { value: 'babel', link: 'https://github.com/babel/babel' },
-  ]
-}
-
-const handleSelect = (item: RestaurantItem) => {
-  console.log(item)
-}
-
-onMounted(() => {
-  restaurants.value = loadAll()
-})
-</script> -->
 <script>
+import {ElMessage} from "element-plus";
+import global from "@/components/Global";
+import router from "@/router";
+import aside from "@/components/Aside";
+import app from "@/App";
 export default {
   name: "Login",
   data() {
@@ -120,9 +111,57 @@ export default {
         backgroundPosition: 'center top'
       },
       inputUsername: '',
-      inputPassword: ''
+      inputPassword: '',
+      dialogVisibleSign:false,
+      formSignIn:{
+        userName: '',
+        password:'',
+        checkPassword:'',
+      }
     }
   },
+
+  methods:{
+    submitForm(){
+      let valid = true
+      if(this.formSignIn.userName === ''){
+        valid = false;
+        ElMessage.error('Username can not be empty')
+      }
+      if(this.formSignIn.password === ''){
+        valid = false;
+        ElMessage.error('Password can not be empty')
+      }
+      if(this.formSignIn.userName === ''){
+        valid = false;
+        ElMessage.error('Please check your password')
+      }
+      if(!(this.formSignIn.password === this.formSignIn.checkPassword)){
+        valid = false;
+        ElMessage.error('Please input check same with password')
+      }
+      if(valid){
+        ElMessage.success('Signed In succeeded')
+        this.dialogVisibleSign = false
+        // TODO:上传用户信息到后端
+      }
+    },
+    handleLogin(){
+      if(this.inputUsername === 'admin' && this.inputPassword === '123456'){
+
+        global.uuid = 0
+        global.userName = 'admin'
+        // app.components.Aside.data().logged = true
+        // app.components.Aside.data().visibleLogged = true
+        this.$emit('login')
+        router.push('upload')
+      }else{
+        this.inputUsername = ''
+        this.inputPassword = ''
+        ElMessage.error('Username or password wrong')
+      }
+    }
+  }
 }
 </script>
 

@@ -5,7 +5,7 @@
     <div style="width: 150px">
       <el-avatar shape="circle" :size="30" :src="circleUrl" style="margin-right: 5px; margin-top: 7px"  />
       <el-dropdown>
-    <span class="el-dropdown-link">
+    <span v-if="isReloadData" class="el-dropdown-link">
       <br>
       {{ this.userName }}
       <el-icon class="el-icon--right">
@@ -29,8 +29,13 @@ import global from "@/components/Global";
 import router from "@/router";
 export default {
   name: "Headerup",
+  inject:['reload'],
+  created() {
+    this.userName = global.userName
+  },
   data(){
     return{
+      isReloadData:true,
       userName: global.userName,
       itemText:global.userName === 'Unsigned' ? 'Login' : 'My space',
     }
@@ -41,6 +46,12 @@ export default {
         router.push('login')
       }
     },
+    reloadPart(){
+      this.isReloadData = false;
+      this.$nextTick(() => {
+        this.isReloadData = true
+      })
+    }
   },
 }
 </script>
