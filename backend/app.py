@@ -211,6 +211,7 @@ def getQuestionOrdered():
             question['stared'] = True
         else:
             question['stared'] = False
+        question['uploader'] = elem[2]
         # if(question['type'] != 'filling'):
         #     question['description'] = question['question'] + '\n' + ' '.join([elem + question['choice'][elem] for elem in question['choice']])
         # else:
@@ -246,6 +247,7 @@ def getQuestionRandom():
         if(id in favor_list):
             question['stared'] = True
         question = json.loads(elem[1])
+        question['uploader'] = elem[2]
         question['ID'] = id
         # 依据前端是否需要答案，配置此项目
         #  question.pop('ans')
@@ -451,6 +453,7 @@ def getUserFavour():
         question = json.loads(q[1])
         question['ID'] = id
         question['stared'] = True
+        question['uploader'] = q[2]
         # 依据前端是否需要答案，配置此项目
         #  question.pop('ans')
         return_list.append(question)
@@ -483,6 +486,7 @@ def getUserWrong():
         question['ID'] = id
         question['stared'] = id in favor_list
         question['time']   = wrong_set[id]
+        question['uploader'] = q[2]
         # 依据前端是否需要答案，配置此项目
         #  question.pop('ans')
         ret_list.append(question)
