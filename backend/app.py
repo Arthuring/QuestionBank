@@ -4,10 +4,8 @@
 @Note: Python大作业后端
 '''
 import hashlib
-from urllib import response
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-
 from utils.data_base import db_wrap
 from utils.user_data_base import user_db_wrap
 import json
@@ -63,15 +61,15 @@ def login_wrong(user_name):
 def login(user_name : str,password : str):
     user_info = user_db.get_user_info(user_name)
     if(user_name in retry_lut):
-        if(retry_lut[user_info]['retry_times'] >= max_login_retry_pre_day and (time.time() - retry_lut[user_info]['last_retry_time']) < 24 * 60 * 60):
-            retry_lut[user_info]['last_retry_time'] = time.time()
+        if(retry_lut[user_name]['retry_times'] >= max_login_retry_pre_day and (time.time() - retry_lut[user_name]['last_retry_time']) < 24 * 60 * 60):
+            retry_lut[user_name]['last_retry_time'] = time.time()
             return {'code':'Max retry_time limit !'}
     if(user_info == None):
         login_wrong(user_name)
         print('NO USER FOUND')
         return {'code':'Wrong username or password !'}
     if(password != str(user_info[1])):
-        print('ERROR PASSWD' + password + ' | ' + str(user_info[1]))
+        print('ERROR PASSWD ' + password + ' | ' + str(user_info[1]))
         login_wrong(user_name)
         return {'code':'Wrong username or password !'}
     user_token_open = user_name + str(time.time()) + password + str('tHiS Is S@lt') + str(len(login_lut))

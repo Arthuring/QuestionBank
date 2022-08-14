@@ -1,30 +1,48 @@
 <template>
-  <div style="">
-    <el-menu
-      :default-active="activeIndex"
-      class="el-menu-demo"
-      mode="horizontal"
-      background-color="#545c64"
-      text-color="#fff"
-      active-text-color="#ffd04b"
-      @select="handleSelect"
-    > <!-- TODO: 更改颜色样式 -->
-      <el-menu-item index="1">Wrong Questions List</el-menu-item>
-      <el-menu-item index="2">Star Questions List</el-menu-item>
-      <el-menu-item index="3">Score Analysis</el-menu-item>
-    </el-menu>
-  </div>
-  <div style="float: left;">
-  ?
-  </div>
 
-  <div style="float: left;">
-    Hi
-  </div>
+    <el-container style="padding: 0; margin: 0">
+      <el-header style="padding: 0;height: 50px">
+        <el-menu
+            :default-active="activeIndex"
+            class="el-menu-demo"
+            mode="horizontal"
+            @select="handleSelect"
+            style="height: 50px"
+        >
+          <el-menu-item index="1" @click="handleSelect('wrong')">Wrong Questions List</el-menu-item>
+          <el-menu-item index="2" @click="handleSelect('star')">Star Questions List</el-menu-item>
+          <el-menu-item index="3" @click="handleSelect('history')">Score Analysis</el-menu-item>
+        </el-menu>
+      </el-header>
+      <el-main style="padding: 0">
+        <router-view  style="flex: 1"/>
+      </el-main>
+    </el-container>
+
+
+<!--  <div style="float: left;">-->
+<!--  ?-->
+<!--  </div>-->
+
+<!--  <div style="float: left;">-->
+<!--    Hi-->
+<!--  </div>-->
 </template>
 
 <script>
+import router from "@/router";
+
 export default {
-  name: "Analysis"
+  name: "Analysis",
+  data(){
+    return{
+      activeIndex:"1",
+    }
+  },
+  methods:{
+    handleSelect(path){
+      router.push(path)
+    }
+  }
 }
 </script>

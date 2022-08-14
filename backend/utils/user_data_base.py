@@ -1,6 +1,5 @@
 import sqlite3
 import os.path
-import json
 import hashlib
 
 class user_db_wrap:

@@ -25,12 +25,12 @@ export default {
   data(){
     return{
       tableData:[
-        {
-          wrong:5,
-          total:10,
-          accuracy:0.5,
-          wrongID:[1, 2,3,4,5],
-        }
+        // {
+        //   wrong:5,
+        //   total:10,
+        //   accuracy:0.5,
+        //   wrongID:[1, 2,3,4,5],
+        // }
       ]
     }
   },
