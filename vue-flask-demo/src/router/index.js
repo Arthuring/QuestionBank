@@ -57,6 +57,7 @@ const routes = [
             },
             {
                 path: '',
+                component: WrongList
             }
         ],
     },
