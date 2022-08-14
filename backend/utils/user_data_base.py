@@ -1,9 +1,6 @@
 import sqlite3
 import os.path
-import json
 import hashlib
-
-from soupsieve import select
 
 class user_db_wrap:
     sql_connection = 0
