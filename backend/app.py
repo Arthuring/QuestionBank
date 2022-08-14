@@ -6,6 +6,7 @@
 import hashlib
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from regex import S
 from utils.data_base import db_wrap
 from utils.user_data_base import user_db_wrap
 import json
@@ -94,21 +95,24 @@ def get_user_name(uuid:str):
 @app.route("/api/getQuestionNum", methods=['POST'])
 def getQuestionNum():
     data = request.get_json()
+    print(data)
     uploader_uid = int(data['uuid']) # 如果uuid为-1, 就不限制题目的uuid
     get_status = data['status'] # 如果状态为'temp',则获取等待提交的题目， 如果状态为'all', 则获取已经提交的题目
     print(get_status)
     # 题库中题目的数量
-    num = db.get_db_size(status=get_status)
+    num = db.get_db_size(status = get_status)
     response = {
         "num": num,
         "code": 'OK'
     }
+    print(response)
     return jsonify(response)
 
 # 获取一定数量的题目信息(已经确认提交的)
 @app.route("/api/getQuestionOrdered", methods=['POST'])
 def getQuestionOrdered():
     data = request.get_json()
+    print(data)
     uploader_uid = int(data['uuid']) # 如果uuid为-1, 就不限制题目的uuid
     get_status = data['status'] # 如果状态为'temp',则获取等待提交的题目， 如果状态为'all', 则获取已经提交的题目
     # 数量，从前端请求中获取
@@ -132,6 +136,7 @@ def getQuestionOrdered():
         "example_questions": question_list,
         "code": 'OK'
     }
+    print(response)
     return jsonify(response)
 
 @app.route("/api/getQuestionRandom", methods=['POST'])
