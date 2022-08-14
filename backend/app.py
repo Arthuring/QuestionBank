@@ -15,6 +15,7 @@ from ocr import img2String
 from question_parser import get_parsered_question
 
 import time
+import datetime
 
 app = Flask(__name__)
 CORS(app)
@@ -46,6 +47,12 @@ def check_status(uuid : str):
     last_login_info['last_see'] = now_time
     login_lut[uuid] = last_login_info
     return True
+
+def get_user_name(uuid : str):
+    check_res = check_status(uuid)
+    if(check_res == False):
+        return None
+    return login_lut[uuid]['user_name']
 
 def login_wrong(user_name):
     if(user_name not in retry_lut):
@@ -250,6 +257,36 @@ def handleRegistration():
     return jsonify({'code':info})
     #备注，只有返回OK才可以完成注册，否之返回Code即为错误原因
 
+@app.route("/api/recordResult", methods=['POST'])
+def recordTestResult():
+    req = request.get_json()
+    user_name = get_user_name(req['uuid'])
+    table = req['table_data']
+    print(req)
+    if(user_name == None):
+        return jsonify({'code':'Not valid UUID'})
+    old_info = user_db.get_user_info(user_name)
+    correct_cnt = 0
+    wrong_cnt = 0
+    wrong_list = []
+    for elem in table:
+        if(elem['result'] == 'accepted'):
+            correct_cnt += 1
+        else:
+            wrong_cnt   += 1
+            wrong_list.append(elem['ID'])
+    new_record = {
+        'time' : datetime.date.today(),
+        'wrong': wrong_cnt, 
+        'total': correct_cnt + wrong_cnt,
+        'wrong_id' : wrong_list,
+        'accuracy' : (wrong_cnt) / (correct_cnt + wrong_cnt)
+    }
+    #{time: y - m - d in string, wrong : int, total : int, wrong_id : list, accuracy : cal}
+    old_record = json.loads(old_info[3])
+    old_record.append(new_record)
+    print(old_record)
+    user_db.set_user_info(user_name,history=old_record)
 
 if __name__ == "__main__":
     # 开启服务

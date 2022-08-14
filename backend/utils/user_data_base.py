@@ -9,7 +9,7 @@ class user_db_wrap:
         if(os.path.isfile(database_name) == False):
             self.sql_connection = sqlite3.connect(database_name)
             data_base_cur = self.sql_connection.cursor()
-            data_base_cur.execute("CREATE TABLE USER (USER_NAME TEXT NOT NULL, PASSWORD TEXT NOT NULL, FAVOUR TEXT NOT NULL, WRONG TEXT NOT NULL, SCORE TEXT NOT NULL)")
+            data_base_cur.execute("CREATE TABLE USER (USER_NAME TEXT NOT NULL, PASSWORD TEXT NOT NULL, FAVOUR TEXT NOT NULL, HISTORY TEXT NOT NULL)")
             self.sql_connection.commit()
         else:
             self.sql_connection = sqlite3.connect(database_name)
@@ -37,17 +37,17 @@ class user_db_wrap:
       if(password == None):
         return 'Password not valid'
       cur = self.sql_connection.cursor()
-      cur.execute("INSERT INTO USER (USER_NAME,PASSWORD,FAVOUR,WRONG,SCORE) VALUES (?,?,?,?,?)",(user_name,password,'[]','[]','[]',))
+      cur.execute("INSERT INTO USER (USER_NAME,PASSWORD,FAVOUR,HISTORY) VALUES (?,?,?,?)",(user_name,password,'[]','[]',))
       return 'OK'
 
-    def set_user_info(self,user_name,password = None,favour = None,wrong = None):
+    def set_user_info(self,user_name,password = None,favour = None,history = None):
       cur = self.sql_connection.cursor()
       if(password != None):
         cur.execute("UPDATE USER SET PASSWORD = ? WHERE USER_NAME = ?",password,user_name)
-      if(favour != None):
-        cur.execute("UPDATE USER SET FAVOUR   = ? WHERE USER_NAME = ?",favour,user_name)
-      if(wrong != None):
-        cur.execute("UPDATE USER SET WRONG    = ? WHERE USER_NAME = ?",favour,user_name)
+      if(favour   != None):
+        cur.execute("UPDATE USER SET FAVOUR   = ? WHERE USER_NAME = ?",favour  ,user_name)
+      if(history  != None):
+        cur.execute("UPDATE USER SET HISTORY  = ? WHERE USER_NAME = ?",history ,user_name)
 
     def db_close(self):
       self.sql_connection.commit()
