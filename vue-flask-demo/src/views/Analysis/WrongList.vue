@@ -6,9 +6,9 @@
           <el-col :span="8" style="color: #409eff;font-weight: bolder; font-size: large">
             Wrong Questions List :(
           </el-col>
-          <el-col :span="4"/>
+          <el-col :span="4" />
           <el-col :span="12">
-<!--            <search-bar/>-->
+            <!--            <search-bar/>-->
           </el-col>
         </el-row>
       </el-header>
@@ -16,20 +16,20 @@
         <el-table :data="tableData" max-height="550" stripe :table-layout="'auto'">
           <template #empty>
             <div class="flex items-center justify-center h-100%">
-              <el-empty/>
+              <el-empty />
             </div>
           </template>
-          <el-table-column prop="ID" label="ID" sortable width="auto"/>
-          <el-table-column prop="uploader" label="uploader"/>
-          <el-table-column prop="question" label="Question"/>
+          <el-table-column prop="ID" label="ID" sortable width="auto" />
+          <el-table-column prop="uploader" label="uploader" />
+          <el-table-column prop="question" label="Question" />
           <el-table-column prop="type" label="Type" :filters="[
-        { text: 'filling', value: 'filling' },
-        { text: 'single choice', value: 'single choice' },
-        { text: 'multiple choice', value: 'multiple choice' },
-      ]" :filter-method="filterTag" filter-placement="bottom-end">
+            { text: 'filling', value: 'filling' },
+            { text: 'single choice', value: 'single choice' },
+            { text: 'multiple choice', value: 'multiple choice' },
+          ]" :filter-method="filterTag" filter-placement="bottom-end">
             <template #default="scope">
               <el-tag :type="scope.row.type === 'filling' ? '' :
-          scope.row.type === 'single choice' ? 'warning' : 'success'" disable-transitions>{{ scope.row.type }}
+              scope.row.type === 'single choice' ? 'warning' : 'success'" disable-transitions>{{ scope.row.type }}
               </el-tag>
             </template>
           </el-table-column>
@@ -37,31 +37,24 @@
             <template #default="scope">
               <el-button plain type="default" size="small" @click="handleDetail(scope.$index)" circle>
                 <el-icon>
-                  <MoreFilled/>
+                  <MoreFilled />
                 </el-icon>
               </el-button>
             </template>
           </el-table-column>
-          <el-table-column prop="time" label="wrongTime" sortable width="auto"/>
+          <el-table-column prop="time" label="wrongTime" sortable width="auto" />
         </el-table>
       </el-main>
       <el-footer style="position: absolute; bottom: 0">
         <el-pagination :currentPage="currentPage" :page-size="pageSize" :page-sizes="[5, 10, 15]" :small="small"
-                       layout="total, sizes, prev, pager, next, jumper" :total="totalPage"
-                       @size-change="handleSizeChange"
-                       @current-change="handleCurrentChange"/>
+          layout="total, sizes, prev, pager, next, jumper" :total="totalPage" @size-change="handleSizeChange"
+          @current-change="handleCurrentChange" />
       </el-footer>
     </el-container>
     <!--弹窗-详情-->
     <el-dialog v-model="dialogVisibleDetail" title="Detail" width="70%" :before-close="handleCloseEdit">
       <!--      TODO: 绑定变量-->
-      <el-descriptions
-          class="margin-top"
-          :title="this.formDetail.question"
-          :column="1"
-          size="default"
-          border
-      >
+      <el-descriptions class="margin-top" :title="this.formDetail.question" :column="1" size="default" border>
         <el-descriptions-item>
           <template #label>
             <div class="cell-item">
@@ -71,26 +64,26 @@
               ID
             </div>
           </template>
-            {{ this.formDetail.ID }}
+          {{ this.formDetail.ID }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template #label>
             <div class="cell-item">
               <el-icon :style="iconStyle">
-                <Filter/>
+                <Filter />
               </el-icon>
               Type
             </div>
           </template>
           <el-tag size="small">
-          {{ this.formDetail.type }}
+            {{ this.formDetail.type }}
           </el-tag>
         </el-descriptions-item>
         <el-descriptions-item>
           <template #label>
             <div class="cell-item">
               <el-icon :style="iconStyle">
-                <user/>
+                <user />
               </el-icon>
               Uploader
             </div>
@@ -151,9 +144,9 @@ export default {
       return row.type === value
     };
     const filterHandler = (
-        value,
-        row,
-        column,
+      value,
+      row,
+      column,
     ) => {
       const property = column['property']
       return row[property] === value
@@ -217,7 +210,7 @@ export default {
   name: "WrongList",
   created() {
     this.getQuestion()
-    this.getQuestionNum(-1,'ready')
+    this.getQuestionNum(-1, 'ready')
   },
   methods: {
     handleSizeChange(number) {
@@ -238,7 +231,7 @@ export default {
       this.formDetail.ID = this.tableData[index].ID
       this.formDetail.wrongRate = this.tableData[index].wrongRate
     },
-    handleStared(index){
+    handleStared(index) {
       this.tableData[index].stared = !this.tableData[index].stared;
     },
 
@@ -255,40 +248,21 @@ export default {
           "Content-Type": "application/json"
         },
       }).then(res => res.json())
-          .catch(error => {
-            console.error('Error:', error)
-          })
-          .then((responseJson) => {
-                console.log(responseJson)
-                this.tableData = responseJson['questions']
-              }
-          )
+        .catch(error => {
+          console.error('Error:', error)
+        })
+        .then((responseJson) => {
+          console.log(responseJson)
+          this.tableData = responseJson['questions']
+        }
+        )
     },
     getQuestionNum(user, option) {
-      fetch("http://127.0.0.1:5001/api/getQuestionNum", {
-        method: "POST",
-        body: JSON.stringify({
-          "num": this.pageSize,
-          "uuid": user,
-          "status": option
-        }),
-        headers: {
-          "Content-Type": "application/json"
-        },
-      }).then(res => res.json())
-          .catch(error => {
-            console.error('Error:', error)
-          })
-          .then((responseJson) => {
-                console.log(responseJson)
-                this.totalPage = responseJson['num']
-              }
-          )
+      this.totalPage = this.tableData.length
     },
   }
 }
 </script>
 
 <style scoped>
-
 </style>
