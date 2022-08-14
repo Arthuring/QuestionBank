@@ -4,10 +4,8 @@
 @Note: Python大作业后端
 '''
 import hashlib
-from unittest import result
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from regex import S
 from utils.data_base import db_wrap
 from utils.user_data_base import user_db_wrap
 import json
@@ -158,16 +156,19 @@ def get_user_name(uuid: str):
 @app.route("/api/getQuestionNum", methods=['POST'])
 def getQuestionNum():
     data = request.get_json()
-    uploader_uid = int(data['uuid'])  # 如果uuid为-1, 就不限制题目的uuid
+    uploader_uid = data['uuid']  # 如果uuid为-1, 就不限制题目的uuid
+    user_name = get_user_name(uploader_uid)
+    if(uploader_uid == -1):
+        user_name = 'system'
+    if(user_name == None and uploader_uid != -1):
+        return jsonify({'code': 'ERROR IN UUID'})
     get_status = data['status']  # 如果状态为'temp',则获取等待提交的题目， 如果状态为'all', 则获取已经提交的题目
-    print(get_status)
     # 题库中题目的数量
-    num = db.get_db_size(status = get_status)
+    num = db.get_db_size(status = get_status,uploader=user_name)
     response = {
         "num": num,
         "code": 'OK'
     }
-    print(response)
     return jsonify(response)
 
 
@@ -175,13 +176,18 @@ def getQuestionNum():
 @app.route("/api/getQuestionOrdered", methods=['POST'])
 def getQuestionOrdered():
     data = request.get_json()
-    uploader_uid = int(data['uuid'])  # 如果uuid为-1, 就不限制题目的uuid
+    uploader_uid = data['uuid']  # 如果uuid为-1, 就不限制题目的uuid
+    user_name = get_user_name(uploader_uid)
+    if(uploader_uid == -1):
+        user_name = 'system'
+    if(user_name == None and uploader_uid != -1):
+        return jsonify({'code': 'ERROR IN UUID'})
     get_status = data['status']  # 如果状态为'temp',则获取等待提交的题目， 如果状态为'all', 则获取已经提交的题目
     # 数量，从前端请求中获取
     num = int(data['num'])
     # 开始的索引
     offset = int(data['offset'])
-    ret = db.get_data_range(offset, num, status=get_status)
+    ret = db.get_data_range(offset, num, status=get_status,uploader=user_name)
     question_list = []
     for elem in ret:
         id = elem[0]
@@ -198,18 +204,22 @@ def getQuestionOrdered():
         "example_questions": question_list,
         "code": 'OK'
     }
-    print(response)
     return jsonify(response)
 
 
 @app.route("/api/getQuestionRandom", methods=['POST'])
 def getQuestionRandom():
     data = request.get_json()
-    uploader_uid = int(data['uuid'])  # 如果uuid为-1, 就不限制题目的uuid
+    uploader_uid = data['uuid']  # 如果uuid为-1, 就不限制题目的uuid
+    user_name = get_user_name(uploader_uid)
+    if(uploader_uid == -1):
+        user_name = 'system'
+    if(user_name == None and uploader_uid != -1):
+        return jsonify({'code': 'ERROR IN UUID'})
     get_status = data['status']  # 如果状态为'temp',则获取等待提交的题目， 如果状态为'all', 则获取已经提交的题目
     # 数量，从前端请求中获取
     num = int(data['num'])
-    ret = db.get_data_random(num, status=get_status)
+    ret = db.get_data_random(num, status=get_status, uploader=user_name)
     question_list = []
     for elem in ret:
         id = elem[0]
@@ -233,7 +243,6 @@ def random_filename(filename):
 @app.route("/api/addQuestion", methods=['POST'])
 def addQuestion():
     data = request.get_json()
-    print(data)
     question_json = data['question_info']
     db.insert_data(question_json, status='temp')
     response = {
@@ -244,8 +253,13 @@ def addQuestion():
 
 @app.route("/api/uploadFile", methods=['POST'])
 def uploadFile():
+    uploader_uid = request.headers['Authorization']
+    user_name = get_user_name(uploader_uid)
+    if(uploader_uid == -1):
+        user_name = 'system'
+    if(user_name == None and uploader_uid != -1):
+        return jsonify({'code': 'ERROR IN UUID'})
     file = request.files.get('file')
-    print(file.filename)
 
     filename = random_filename(file.filename)
     filepath = os.path.join('uploads_tmp', filename)
@@ -264,11 +278,10 @@ def uploadFile():
                 if get_filetype(filepath) == 'png' or get_filetype(filepath) == 'jpg':
                     print('get png jpg')
                     text = img2String(filepath)
-                    print(text)
                     question_list = [get_parsered_question(question) for question in text]
                     print(question_list)
                     for question in question_list:
-                        db.insert_data(question, status='temp')
+                        db.insert_data(question, status='temp',uploader=user_name)
                     os.remove(filepath)
     except:
         return jsonify({'code': 'ERROR IN PARSING'})
@@ -281,7 +294,6 @@ def uploadFile():
 @app.route("/api/delQuestion", methods=['POST'])
 def delQuestion():
     data = request.get_json()
-    print(data)
     delete_id = int(data['ID'])
     db.delete_data(delete_id)
     response = {
@@ -294,7 +306,6 @@ def delQuestion():
 @app.route("/api/setQuestion", methods=['POST'])
 def setQuestion():
     data = request.get_json()
-    print(data)
     data_id = int(data['ID'])
     question_json = data['question_info']
     db.update_data_byid(data_id, question_json)
@@ -319,7 +330,6 @@ def handleSubmit():
 @app.route("/api/login", methods=['POST'])
 def handleLogin():
     login_requests = request.get_json()
-    print(login_requests)
     return_uuid = login(user_name=login_requests['user_name'], password=login_requests['password'])
     if (type(return_uuid) == dict):
         response = {
@@ -331,7 +341,6 @@ def handleLogin():
             'code': 'OK',
             'uuid': return_uuid
         }
-    print(response)
     return jsonify(response)
 
 
@@ -350,7 +359,6 @@ def recordTestResult():
     req = request.get_json()
     user_name = get_user_name(req['uuid'])
     table = req['table_data']
-    print(req)
     if (user_name == None):
         print('Error user')
         return jsonify({'code': 'Not valid UUID'})
@@ -374,7 +382,6 @@ def recordTestResult():
     # {time: y - m - d in string, wrong : int, total : int, wrong_id : list, accuracy : cal}
     old_record = json.loads(old_info[3])
     old_record.append(new_record)
-    print(old_record)
     user_db.set_user_info(user_name, history=old_record)
     return jsonify({'code': 'OK'})
 
@@ -383,12 +390,10 @@ def recordTestResult():
 def getUserRecord():
     req = request.get_json()
     user_name = get_user_name(req['uuid'])
-    print(req)
     if(user_name == None):
         print('Error user')
         return jsonify({'code':'Not valid UUID'})
     old_info = user_db.get_user_info(user_name)
-    print({'code':'OK','data':json.loads(old_info[3])})
     return jsonify({'code':'OK','data':json.loads(old_info[3])})
 
 if __name__ == "__main__":

@@ -7,21 +7,19 @@
         </div>
         <el-row justify="space-between" style="padding: 10px 0">
           <el-col :span="8">
-            <el-button type="primary" round size="large" @click="addQuestion"
-                       :disabled="this.unLogged"
-            >Upload Question
+            <el-button type="primary" round size="large" @click="addQuestion" :disabled="this.unLogged">Upload Question
               <el-icon class="el-icon--right" size="large">
-                <UploadFilled/>
+                <UploadFilled />
               </el-icon>
             </el-button>
             <el-button circle type="primary" size="large" @click="handleAdd" :disabled="this.unLogged">
               <el-icon size="large">
-                <Plus/>
+                <Plus />
               </el-icon>
             </el-button>
-            <el-button circle plain type="primary" size="large" @click="getQuestion(this.uuid, 'temp')">
+            <el-button circle plain type="primary" size="large" @click="getQuestion(global.uuid, 'temp')">
               <el-icon size="large">
-                <Refresh/>
+                <Refresh />
               </el-icon>
             </el-button>
 
@@ -32,7 +30,7 @@
           <el-col :span="8">
             <span style="text-align: right; margin-left: 5px; color: #6db1f8; font-weight: bold ">
               Your questions are following <el-icon size="large">
-                <ArrowDownBold/>
+                <ArrowDownBold />
               </el-icon>
             </span>
           </el-col>
@@ -40,14 +38,14 @@
       </el-header>
       <el-main style="overflow: auto">
         <!--    upload-->
-        <el-table :data="tableData" max-height="500"  stripe :table-layout="'auto'">
+        <el-table :data="tableData" max-height="500" stripe :table-layout="'auto'">
           <template #empty>
             <div class="flex items-center justify-center h-100%">
-              <el-empty/>
+              <el-empty />
             </div>
           </template>
-          <el-table-column type="index" width="50"/>
-          <el-table-column prop="question" label="Question"/>
+          <el-table-column type="index" width="50" />
+          <el-table-column prop="question" label="Question" />
           <el-table-column prop="type" label="Type" :filters="[
             { text: 'filling', value: 'filling' },
             { text: 'single choice', value: 'single choice' },
@@ -62,12 +60,12 @@
           <el-table-column fixed="right" label="Operations" width="120px">
             <template #default="scope">
               <el-button-group class="ml-4">
-                <el-button plain type="primary" size="small" :icon="'Edit'" @click="handleEdit(scope.$index)"/>
+                <el-button plain type="primary" size="small" :icon="'Edit'" @click="handleEdit(scope.$index)" />
                 <el-popconfirm title="Are you sure to delete this?" @confirm="handleDelete(scope.$index)">
                   <template #reference>
                     <el-button plain type="danger" size="small">
                       <el-icon>
-                        <Delete/>
+                        <Delete />
                       </el-icon>
                     </el-button>
 
@@ -82,9 +80,8 @@
         <el-row justify="space-between">
           <el-col :span="22">
             <el-pagination :currentPage="currentPage" :page-size="pageSize" :page-sizes="[5, 10, 15]" :small="small"
-                           layout="total, sizes, prev, pager, next, jumper" :total="totalPage"
-                           @size-change="handleSizeChange"
-                           @current-change="handleCurrentChange"/>
+              layout="total, sizes, prev, pager, next, jumper" :total="totalPage" @size-change="handleSizeChange"
+              @current-change="handleCurrentChange" />
           </el-col>
           <el-col :span="2">
             <!--            确认上传按钮，上传后清空页面中已有的问题-->
@@ -93,7 +90,7 @@
                 <el-button type="primary" size="default">
                   submit
                   <el-icon class="el-icon--right">
-                    <Check/>
+                    <Check />
                   </el-icon>
                 </el-button>
               </template>
@@ -106,9 +103,9 @@
 
     <!--    弹窗-上传问题-->
     <el-dialog v-model="dialogVisibleUpload" title="Upload question file" width="70%" :before-close="handleClose">
-      <el-upload class="upload-demo" drag action="http://127.0.0.1:5001/api/uploadFile" multiple>
+      <el-upload class="upload-demo" drag action="http://127.0.0.1:5001/api/uploadFile" :headers="uploadHeader" multiple>
         <el-icon class="el-icon--upload">
-          <upload-filled/>
+          <upload-filled />
         </el-icon>
         <div class="el-upload__text">
           Drop file here or <em>click to upload</em>
@@ -124,7 +121,7 @@
           <el-button type="primary" @click="handleUpload" size="=default">
             Finish
             <el-icon class="el-icon--right" size="default">
-              <Finished/>
+              <Finished />
             </el-icon>
           </el-button>
         </span>
@@ -133,20 +130,20 @@
     <el-dialog v-model="dialogVisibleAdd" title="Add your question" width="70%" :before-close="handleCloseEdit">
       <el-form :model="formConfirmQuestion" :label-position="'left'" label-width="150px">
         <el-form-item label="Question">
-          <el-input v-model="formConfirmQuestion.question"/>
+          <el-input v-model="formConfirmQuestion.question" />
         </el-form-item>
         <el-form-item label="detail">
-          <el-input v-model="formConfirmQuestion.description" type="textarea"/>
+          <el-input v-model="formConfirmQuestion.description" type="textarea" />
         </el-form-item>
         <el-form-item label="type">
           <el-select v-model="formConfirmQuestion.type" placeholder="please select type">
-            <el-option label="filling" value="filling"/>
-            <el-option label="single choice" value="single choice"/>
-            <el-option label="multiple choice" value="multiple choice"/>
+            <el-option label="filling" value="filling" />
+            <el-option label="single choice" value="single choice" />
+            <el-option label="multiple choice" value="multiple choice" />
           </el-select>
         </el-form-item>
         <el-form-item label="Please input answer">
-          <el-input v-model="formConfirmQuestion.ans" type="textarea"/>
+          <el-input v-model="formConfirmQuestion.ans" type="textarea" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -155,7 +152,7 @@
           <el-button type="primary" @click="handleAddConfirm">
             Confirm
             <el-icon class="el-icon--right">
-              <Check/>
+              <Check />
             </el-icon>
           </el-button>
         </span>
@@ -165,20 +162,20 @@
     <el-dialog v-model="dialogVisibleEdit" title="Confirm your question" width="70%" :before-close="handleCloseEdit">
       <el-form :model="formConfirmQuestion" :label-position="'left'" label-width="150px">
         <el-form-item label="Question">
-          <el-input v-model="formConfirmQuestion.question"/>
+          <el-input v-model="formConfirmQuestion.question" />
         </el-form-item>
         <el-form-item label="detail">
-          <el-input v-model="formConfirmQuestion.description" type="textarea"/>
+          <el-input v-model="formConfirmQuestion.description" type="textarea" />
         </el-form-item>
         <el-form-item label="type">
           <el-select v-model="formConfirmQuestion.type" placeholder="please select type">
-            <el-option label="filling" value="filling"/>
-            <el-option label="single choice" value="single choice"/>
-            <el-option label="multiple choice" value="multiple choice"/>
+            <el-option label="filling" value="filling" />
+            <el-option label="single choice" value="single choice" />
+            <el-option label="multiple choice" value="multiple choice" />
           </el-select>
         </el-form-item>
         <el-form-item label="Please input answer">
-          <el-input v-model="formConfirmQuestion.ans" type="textarea"/>
+          <el-input v-model="formConfirmQuestion.ans" type="textarea" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -187,7 +184,7 @@
           <el-button type="primary" @click="handleEditConfirm">
             Confirm
             <el-icon class="el-icon--right">
-              <Check/>
+              <Check />
             </el-icon>
           </el-button>
         </span>
@@ -195,13 +192,9 @@
     </el-dialog>
     <!--    弹窗上传成功-->
     <el-dialog v-model="dialogVisibleSuccess" title="" width="50%" :before-close="handleCloseEdit">
-      <el-result
-          icon="success"
-          title="submit succeed"
-          sub-title="You can see your questions in question list.\yeah!/"
-      >
+      <el-result icon="success" title="submit succeed" sub-title="You can see your questions in question list.\yeah!/">
         <template #extra>
-          <el-button type="primary" @click="dialogVisibleSuccess=false">great!</el-button>
+          <el-button type="primary" @click="dialogVisibleSuccess = false">great!</el-button>
         </template>
       </el-result>
     </el-dialog>
@@ -212,10 +205,10 @@
 <script>
 // @ is an alias to /src
 // import HelloWorld from '@/components/HelloWorld.vue'
-import {TableColumnCtx} from 'element-plus/es/components/table/src/table-column/defaults'
-import {UploadFilled} from '@element-plus/icons-vue'
+import { TableColumnCtx } from 'element-plus/es/components/table/src/table-column/defaults'
+import { UploadFilled } from '@element-plus/icons-vue'
 import SearchBar from "@/components/SearchBar";
-import {ElMessage} from "element-plus";
+import { ElMessage } from "element-plus";
 import global from "@/components/Global";
 
 export default {
@@ -228,9 +221,9 @@ export default {
       return row.type === value
     };
     const filterHandler = (
-        value,
-        row,
-        column,
+      value,
+      row,
+      column,
     ) => {
       const property = column['property']
       return row[property] === value
@@ -265,7 +258,7 @@ export default {
       pageSize: 10,
       totalPage: 100,
       dialogVisibleUpload: false,
-      dialogVisibleAdd:false,
+      dialogVisibleAdd: false,
       dialogVisibleEdit: false,
       dialogVisibleSuccess: false,
       unLogged: global.uuid === -1,
@@ -276,20 +269,26 @@ export default {
         //   question: 'No. 189, Grove St, Los Angeles',
         //   ans:'',
         // }
-      ]
+      ],
+      uploadHeader: {
+        Authorization: this.getUUID()
+      }
     }
   },
   created() {
-    this.getQuestion(this.uuid, 'temp')
-    this.getQuestionNum(this.uuid, 'temp')
+    this.getQuestion(global.uuid, 'temp')
+    this.getQuestionNum(global.uuid, 'temp')
   },
   methods: {
     addQuestion() {
       this.dialogVisibleUpload = true
     },
-    handleAdd(){
+    getUUID() {
+      return global.uuid
+    },
+    handleAdd() {
       this.dialogVisibleAdd = true
-      this.formConfirmQuestion.question =''
+      this.formConfirmQuestion.question = ''
       this.formConfirmQuestion.description = ''
       this.formConfirmQuestion.type = ''
       this.formConfirmQuestion.ans = ''
@@ -304,15 +303,15 @@ export default {
     },
     handleDelete(index) {
       this.delQuestion(this.tableData[index]['ID'])
-      this.getQuestion(this.uuid, 'temp')
-      this.getQuestionNum(this.uuid, 'temp')
+      this.getQuestion(global.uuid, 'temp')
+      this.getQuestionNum(global.uuid, 'temp')
     },
     handleUpload() {
       this.refresh()
       this.dialogVisibleUpload = false
       //this.dialogVisibleSuccess = true
     },
-    handleAddConfirm(){
+    handleAddConfirm() {
       this.dialogVisibleAdd = false
       fetch("http://127.0.0.1:5001/api/addQuestion", {
         method: "POST",
@@ -329,30 +328,30 @@ export default {
           "Content-Type": "application/json"
         },
       }).then(res => res.json())
-          .catch(error => {
-            console.error('Error:', error)
+        .catch(error => {
+          console.error('Error:', error)
+        })
+        .then((responseJson) => {
+          console.log(responseJson)
+          this.refresh()
+          ElMessage({
+            message: 'Add success. :)',
+            type: 'success',
           })
-          .then((responseJson) => {
-                console.log(responseJson)
-                this.refresh()
-                ElMessage({
-                  message: 'Add success. :)',
-                  type: 'success',
-                })
-              }
-          )
+        }
+        )
 
       this.getQuestion(global.uuid, 'temp')
       this.getQuestionNum(global.uuid, 'temp')
     },
     handleClose() {
-      this.getQuestion(this.uuid, 'temp')
-      this.getQuestionNum(this.uuid, 'temp')
+      this.getQuestion(global.uuid, 'temp')
+      this.getQuestionNum(global.uuid, 'temp')
       this.dialogVisibleUpload = false
     },
     refresh() {
-      this.getQuestion(this.uuid, 'temp')
-      this.getQuestionNum(this.uuid, 'temp')
+      this.getQuestion(global.uuid, 'temp')
+      this.getQuestionNum(global.uuid, 'temp')
     },
     handleSubmit() {
       fetch("http://127.0.0.1:5001/api/handleSubmit", {
@@ -366,14 +365,14 @@ export default {
           "Content-Type": "application/json"
         },
       }).then(res => res.json())
-          .catch(error => {
-            console.error('Error:', error)
-          })
-          .then((responseJson) => {
-                console.log(responseJson)
-                //this.tableData = responseJson['example_questions']
-              }
-          )
+        .catch(error => {
+          console.error('Error:', error)
+        })
+        .then((responseJson) => {
+          console.log(responseJson)
+          //this.tableData = responseJson['example_questions']
+        }
+        )
       this.tableData = []
       this.dialogVisibleSuccess = true
       this.totalPage = 0
@@ -398,28 +397,28 @@ export default {
           "Content-Type": "application/json"
         },
       }).then(res => res.json())
-          .catch(error => {
-            console.error('Error:', error)
+        .catch(error => {
+          console.error('Error:', error)
+        })
+        .then((responseJson) => {
+          console.log(responseJson)
+          this.refresh()
+          ElMessage({
+            message: 'Edit success. :)',
+            type: 'success',
           })
-          .then((responseJson) => {
-                console.log(responseJson)
-                this.refresh()
-                ElMessage({
-                  message: 'Edit success. :)',
-                  type: 'success',
-                })
-              }
-          )
+        }
+        )
     },
     handleSizeChange(number) {
       this.pageSize = number
-      this.getQuestion(this.uuid, 'temp')
-      this.getQuestionNum(this.uuid, 'temp')
+      this.getQuestion(global.uuid, 'temp')
+      this.getQuestionNum(global.uuid, 'temp')
     },
     handleCurrentChange(number) {
       this.currentPage = number
-      this.getQuestion(this.uuid, 'temp')
-      this.getQuestionNum(this.uuid, 'temp')
+      this.getQuestion(global.uuid, 'temp')
+      this.getQuestionNum(global.uuid, 'temp')
     },
     getQuestion(user, option) {//TODO：需要新增一个只get最新一次提交的question的函数
       fetch("http://127.0.0.1:5001/api/getQuestionOrdered", {
@@ -434,14 +433,14 @@ export default {
           "Content-Type": "application/json"
         },
       }).then(res => res.json())
-          .catch(error => {
-            console.error('Error:', error)
-          })
-          .then((responseJson) => {
-                console.log(responseJson)
-                this.tableData = responseJson['example_questions']
-              }
-          )
+        .catch(error => {
+          console.error('Error:', error)
+        })
+        .then((responseJson) => {
+          console.log(responseJson)
+          this.tableData = responseJson['example_questions']
+        }
+        )
     },
     getQuestionNum(user, option) {
       fetch("http://127.0.0.1:5001/api/getQuestionNum", {
@@ -455,14 +454,14 @@ export default {
           "Content-Type": "application/json"
         },
       }).then(res => res.json())
-          .catch(error => {
-            console.error('Error:', error)
-          })
-          .then((responseJson) => {
-                console.log(responseJson)
-                this.totalPage = responseJson['num']
-              }
-          )
+        .catch(error => {
+          console.error('Error:', error)
+        })
+        .then((responseJson) => {
+          console.log(responseJson)
+          this.totalPage = responseJson['num']
+        }
+        )
     },
     delQuestion(ID) {
       fetch("http://127.0.0.1:5001/api/delQuestion", {
@@ -476,14 +475,14 @@ export default {
           "Content-Type": "application/json"
         },
       }).then(res => res.json())
-          .catch(error => {
-            console.error('Error:', error)
-          })
-          .then((responseJson) => {
-                console.log(responseJson)
-                //this.tableData = responseJson['example_questions']
-              }
-          )
+        .catch(error => {
+          console.error('Error:', error)
+        })
+        .then((responseJson) => {
+          console.log(responseJson)
+          //this.tableData = responseJson['example_questions']
+        }
+        )
     }
   }
 }
