@@ -16,7 +16,7 @@
           <el-dropdown-menu>
             <el-dropdown-item @click="handleItemOne"><el-icon class="small"> <User /></el-icon>
               {{ this.itemText }}</el-dropdown-item>
-            <el-dropdown-item> <el-icon class="small"> <Setting /></el-icon>Settings</el-dropdown-item>
+            <el-dropdown-item @click="handleLogout"> <el-icon class="small"> <SwitchButton /></el-icon>logout</el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
@@ -27,6 +27,7 @@
 <script>
 import global from "@/components/Global";
 import router from "@/router";
+import login from "@/views/Login";
 export default {
   name: "Headerup",
   inject:['reload'],
@@ -37,13 +38,13 @@ export default {
     return{
       isReloadData:true,
       userName: global.userName,
-      itemText:global.userName === 'Unsigned' ? 'Login' : 'My space',
+      itemText:global.uuid === -1 ? 'Login' : 'My space',
     }
   },
   methods:{
     handleItemOne(){
       if(global.uuid === -1){
-        router.push('login')
+        router.push('/login')
       }
     },
     reloadPart(){
@@ -51,6 +52,14 @@ export default {
       this.$nextTick(() => {
         this.isReloadData = true
       })
+    },
+    handleLogout(){
+      //TODO:将uuid发给后端
+      global.uuid = -1
+      global.userName = 'not logged'
+      this.userName = global.userName
+      this.itemText = global.uuid === -1 ? 'Login' : 'My space'
+      router.push('/login')
     }
   },
 }

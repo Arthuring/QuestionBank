@@ -376,6 +376,7 @@ export default {
           )
       this.tableData = []
       this.dialogVisibleSuccess = true
+      this.totalPage = 0
     },
     handleEditConfirm(index) {
       this.dialogVisibleEdit = false

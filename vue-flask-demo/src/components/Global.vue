@@ -6,7 +6,7 @@
 export default {
   name: "Global.vue",
   uuid:-1,
-  userName:'Unsigned',
+  userName:'not logged',
   testTable:[],
   recite: false,
 }
