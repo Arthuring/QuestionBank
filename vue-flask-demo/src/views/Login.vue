@@ -83,11 +83,13 @@
 </template>
 
 <script>
+import md5 from 'js-md5';
 import { ElMessage } from "element-plus";
 import global from "@/components/Global";
 import router from "@/router";
 import aside from "@/components/Aside";
 import app from "@/App";
+
 export default {
   name: "Login",
   data() {
@@ -116,6 +118,9 @@ export default {
   },
 
   methods: {
+    getHash(string){
+
+    },
     submitForm() {
       let valid = true
       if (this.formSignIn.userName === '') {
@@ -141,7 +146,7 @@ export default {
           method: "POST",
           body: JSON.stringify({
             "user_name": this.formSignIn.userName,
-            "password": this.formSignIn.password
+            "password": md5(this.formSignIn.password)
           }),
           headers: {
             "Content-Type": "application/json"
@@ -179,7 +184,7 @@ export default {
         method: "POST",
         body: JSON.stringify({
           "user_name": this.inputUsername,
-          "password": this.inputPassword
+          "password": md5(this.inputPassword)
         }),
         headers: {
           "Content-Type": "application/json"
@@ -191,7 +196,7 @@ export default {
         .then((responseJson) => {
           console.log(responseJson)
           if (responseJson['code'] == 'OK') {
-            ElMessage.success('Signed In succeeded')
+            //ElMessage.success('Signed In succeeded')
             global.uuid = responseJson['uuid']
             global.userName = this.inputUsername
             this.$emit('login')

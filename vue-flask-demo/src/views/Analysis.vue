@@ -41,6 +41,7 @@ export default {
   },
   methods:{
     handleSelect(path){
+      router.push('analysis')
       router.push(path)
     }
   }

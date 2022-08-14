@@ -66,24 +66,21 @@ const routes = [
         name: 'testing',
         component: Testing
     },
-    // {
-    //     path: '/history',
-    //     name:'history',
-    //     redirect: '/analysis/history',
-    //     component: HistoryScore,
-    // },
-    // {
-    //     path: '/star',
-    //     name:'star',
-    //     redirect: '/analysis/star',
-    //     component: HistoryScore,
-    // },
-    // {
-    //     path: '/wrong',
-    //     name:'wrong',
-    //     redirect: '/analysis/wrong',
-    //     component: HistoryScore,
-    // }
+    {
+        path: '/history',
+        redirect: '/analysis/history',
+        component: HistoryScore,
+    },
+    {
+        path: '/star',
+        redirect: '/analysis/star',
+        component: HistoryScore,
+    },
+    {
+        path: '/wrong',
+        redirect: '/analysis/wrong',
+        component: HistoryScore,
+    }
 
 ]
 

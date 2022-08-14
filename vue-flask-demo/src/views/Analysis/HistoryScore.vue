@@ -7,7 +7,7 @@
     </template>
     <el-table-column type="index" width="50"/>
     <el-table-column sortable prop="time" label="Time"/>
-    <el-table-column sortable prop="wrong" label="Wrong answer"/>
+    <el-table-column sortable prop="wrong" label="Number of wrong answer"/>
     <el-table-column prop="wrongID" label="Wrong ID"/>
     <el-table-column sortable prop="total" label="Total"/>
     <el-table-column sortable prop="accuracy" label="Accuracy"/>

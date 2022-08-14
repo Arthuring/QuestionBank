@@ -23,7 +23,7 @@
       <!--        &lt;!&ndash;        </el-sub-menu>&ndash;&gt;-->
       <!--      </el-sub-menu>-->
 
-      <el-menu-item index="1" @click="handleAside('upload')">
+      <el-menu-item index="1" @click="handleAside('/upload')">
         <el-icon>
           <el-icon>
             <Upload/>
@@ -33,7 +33,7 @@
       </el-menu-item>
 
 
-      <el-menu-item index="2" @click="handleAside('list')">
+      <el-menu-item index="2" @click="handleAside('/list')">
         <el-icon>
           <Document/>
         </el-icon>
@@ -41,7 +41,7 @@
       </el-menu-item>
 
 
-      <el-menu-item index="3" @click="handleAside('test')">
+      <el-menu-item index="3" @click="handleAside('/test')">
         <el-icon>
           <DocumentChecked/>
         </el-icon>
@@ -49,7 +49,7 @@
       </el-menu-item>
 
 
-      <el-menu-item index="4" @click="handleAside('analysis')">
+      <el-menu-item index="4" @click="handleAside('/analysis')">
         <el-icon>
           <el-icon>
             <DataLine/>
