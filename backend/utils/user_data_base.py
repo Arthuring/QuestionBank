@@ -7,7 +7,6 @@ from soupsieve import select
 
 class user_db_wrap:
     sql_connection = 0
-    id_seq = -1
 
     def __init__(self,database_name = "/home/dofingert/Source/Python_project/my_question.db"):
         if(os.path.isfile(database_name) == False):
@@ -15,10 +14,8 @@ class user_db_wrap:
             data_base_cur = self.sql_connection.cursor()
             data_base_cur.execute("CREATE TABLE USER (USER_NAME TEXT NOT NULL, PASSWORD TEXT NOT NULL, FAVOUR TEXT NOT NULL, WRONG TEXT NOT NULL, SCORE TEXT NOT NULL)")
             self.sql_connection.commit()
-            self.id_seq = 0
         else:
             self.sql_connection = sqlite3.connect(database_name)
-            self.id_seq = self.get_max_id()
 
     def get_user_info(self,user_name = 'system'):
       cur = self.sql_connection.cursor()
@@ -33,12 +30,14 @@ class user_db_wrap:
 
     def register_user(self,user_name,password):
       user_info = self.get_user_info(user_name)
+      print(user_info)
+      print(user_name,password)
       if(user_info != None):
         return 'User name not valid.'
       if(password == None):
         return 'Password not valid'
       cur = self.sql_connection.cursor()
-      cur.execute("INSERT INTO USER (USER_NAME PASSWORD FAVOUR WRONG) VALUES (?,?,?,?)"(user_name,password,str([]),str([])))
+      cur.execute("INSERT INTO USER (USER_NAME,PASSWORD,FAVOUR,WRONG,SCORE) VALUES (?,?,?,?,?)",(user_name,password,'[]','[]','[]',))
       return 'OK'
 
     def set_user_info(self,user_name,password = None,favour = None,wrong = None):
