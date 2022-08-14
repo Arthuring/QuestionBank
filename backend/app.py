@@ -26,7 +26,7 @@ def getQuestionNum():
     get_status = data['status'] # 如果状态为'temp',则获取等待提交的题目， 如果状态为'all', 则获取已经提交的题目
     print(get_status)
     # 题库中题目的数量
-    num = db.get_db_size()
+    num = db.get_db_size(status=get_status)
     response = {
         "num": num,
         "code": 'OK'
