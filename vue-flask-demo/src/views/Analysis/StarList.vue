@@ -14,6 +14,11 @@
       </el-header>
       <el-main style="overflow: auto">
         <el-table :data="tableData" max-height="550" stripe :table-layout="'auto'">
+          <template #empty>
+            <div class="flex items-center justify-center h-100%">
+              <el-empty/>
+            </div>
+          </template>
           <el-table-column prop="ID" label="ID" sortable width="auto"/>
           <el-table-column prop="uploader" label="uploader"/>
           <el-table-column prop="question" label="Question"/>
@@ -157,24 +162,24 @@ export default {
       pageSize: 15,
       totalPage: 100,//TODO: 通过后端获取问题总数
       tableData: [
-        {
-          ID: '123',
-          type: 'multiple choice',
-          uploader: 'Arthuring',
-          description: "下列正确的是 A：xxx B: xxx C: xxx D:xxx",
-          question: '下列正确的是',
-          ans: 'ABC',
-          stared: true,
-        },
-        {
-          ID: '456',
-          type: 'multiple choice',
-          uploader: 'Arthuring',
-          description: "下列正确的是 A：xxx B: xxx C: xxx D:xxx",
-          question: '下列正确的是',
-          ans: 'ABC',
-          stared: false,
-        },
+        // {
+        // //   ID: '123',
+        // //   type: 'multiple choice',
+        // //   uploader: 'Arthuring',
+        // //   description: "下列正确的是 A：xxx B: xxx C: xxx D:xxx",
+        // //   question: '下列正确的是',
+        // //   ans: 'ABC',
+        // //   stared: true,
+        // // },
+        // // {
+        // //   ID: '456',
+        // //   type: 'multiple choice',
+        // //   uploader: 'Arthuring',
+        // //   description: "下列正确的是 A：xxx B: xxx C: xxx D:xxx",
+        // //   question: '下列正确的是',
+        // //   ans: 'ABC',
+        // //   stared: false,
+        // },
 
       ],
     }

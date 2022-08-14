@@ -14,6 +14,11 @@
       </el-header>
       <el-main style="overflow: auto">
         <el-table :data="tableData" max-height="550" stripe :table-layout="'auto'">
+          <template #empty>
+            <div class="flex items-center justify-center h-100%">
+              <el-empty/>
+            </div>
+          </template>
           <el-table-column prop="ID" label="ID" sortable width="auto"/>
           <el-table-column prop="uploader" label="uploader"/>
           <el-table-column prop="question" label="Question"/>
