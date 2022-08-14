@@ -136,6 +136,7 @@
 </template>
 
 <script>
+import global from "@/components/Global";
 import SearchBar from "@/components/SearchBar";
 
 export default {
@@ -171,26 +172,26 @@ export default {
       pageSize: 15,
       totalPage: 100,//TODO: 通过后端获取问题总数
       tableData: [
-        {
-          ID: '123',
-          type: 'multiple choice',
-          uploader: 'Arthuring',
-          description: "下列正确的是 A：xxx B: xxx C: xxx D:xxx",
-          question: '下列正确的是',
-          ans: 'ABC',
-          stared: true,
-          wrongRate: 0.4,
-        },
-        {
-          ID: '456',
-          type: 'multiple choice',
-          uploader: 'Arthuring',
-          description: "下列正确的是 A：xxx B: xxx C: xxx D:xxx",
-          question: '下列正确的是',
-          ans: 'ABC',
-          stared: false,
-          wrongRate: 0.2,
-        },
+        // {
+        //   ID: '123',
+        //   type: 'multiple choice',
+        //   uploader: 'Arthuring',
+        //   description: "下列正确的是 A：xxx B: xxx C: xxx D:xxx",
+        //   question: '下列正确的是',
+        //   ans: 'ABC',
+        //   stared: true,
+        //   wrongRate: 0.4,
+        // },
+        // {
+        //   ID: '456',
+        //   type: 'multiple choice',
+        //   uploader: 'Arthuring',
+        //   description: "下列正确的是 A：xxx B: xxx C: xxx D:xxx",
+        //   question: '下列正确的是',
+        //   ans: 'ABC',
+        //   stared: false,
+        //   wrongRate: 0.2,
+        // },
 
       ],
       formConfirmQuestion: {
@@ -242,12 +243,12 @@ export default {
     },
 
     getQuestion() {
-      fetch("http://127.0.0.1:5001/api/getQuestionOrdered", {
+      fetch("http://127.0.0.1:5001/api/getWrong", {
         method: "POST",
         body: JSON.stringify({
           "num": this.pageSize,
           "offset": this.pageSize * (this.currentPage - 1),
-          "uuid": -1,
+          "uuid": global.uuid,
           "status": 'ready'
         }),
         headers: {
@@ -259,7 +260,7 @@ export default {
           })
           .then((responseJson) => {
                 console.log(responseJson)
-                this.tableData = responseJson['example_questions']
+                this.tableData = responseJson['questions']
               }
           )
     },
