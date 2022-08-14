@@ -3,11 +3,13 @@
 '''
 @Note: Python大作业后端
 '''
+import hashlib
 from urllib import response
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from more_itertools import last
 from utils.data_base import db_wrap
+from utils.user_data_base import user_db_wrap
 import json
 import uuid
 import os
@@ -15,22 +17,25 @@ from ocr import img2String
 from question_parser import get_parsered_question
 
 import time
-from
 
 app = Flask(__name__)
 CORS(app)
 app.config.from_object(__name__)
 db  = db_wrap("my_question.db")
+user_db = user_db_wrap("my_users.db")
 
 max_login_retry_pre_day = 3
-max_login_time          = 2 * 60 * 60 # hour
+max_login_time          = 2 * 60 * 60 # second
+# 当超过max login time限制的时间后，登陆失效。
+
 # {uuid:{user_name:'str',last_see:'time'}}
 login_lut = {}
 
-# {user_name:{retry_times:'times',last_retry_dat:'day'}}
+# {user_name:{retry_times:'times',last_retry_time:'time'}}
 retry_lut = {}
 
 # TODO
+# 副作用， 每一次check status, 登陆的用户都会刷新一下last seen time，保持在线。 前端可以通过定期发送一个包，来保证在浏览网页的人不会被退出登陆
 def check_status(uuid : str):
     if(uuid not in login_lut.keys):
         return False
@@ -44,9 +49,39 @@ def check_status(uuid : str):
     login_lut[uuid] = last_login_info
     return True
 
-# TODO
-def login(user_name : str,password : str):
+def login_wrong(user_name):
+    if(user_name not in retry_lut):
+        retry_lut[user_name] = {'retry_times' : 0, 'last_retry_time' : 0}
+    retry_info = retry_lut[user_name]
+    retry_info['retry_times'] += 1
+    retry_info['last_retry_time'] = int(time.time())
+    retry_lut[user_name] = retry_info
+    return
 
+# TODO
+# 副作用， 已经登陆的用户再一次登陆时，会更新token，使旧Token失效
+def login(user_name : str,password : str):
+    user_info = user_db.get_user_info(user_name=user_name)
+    if(user_name in retry_lut):
+        if(retry_lut[user_info]['retry_times'] >= max_login_retry_pre_day and (time.time() - retry_lut[user_info]['last_retry_time']) < 24 * 60 * 60):
+            retry_lut[user_info]['last_retry_time'] = time.time()
+            return False
+    if(user_info == None):
+        login_wrong(user_name)
+        return False
+    if(password != str(user_info[1])):
+        login_wrong(user_name)
+        return False
+    user_token_open = user_name + str(time.time()) + password + str('tHiS Is S@lt') + str(len(login_lut))
+    user_token = hashlib.sha256(user_token_open.encode('utf-8')).hexdigest()
+    login_lut[user_token] = {'user_name':user_name,'last_see':time.time()}
+    return user_token
+    
+# 副作用，效果等同于直接调用check status
+def get_user_name(uuid:str):
+    if(check_status(uuid) == False):
+        return None
+    return login_lut[uuid]['user_name']
 
 # 获取题目的总数
 @app.route("/api/getQuestionNum", methods=['POST'])
@@ -186,6 +221,22 @@ def handleSubmit():
     response = {
         'code': 'OK'
     }
+    return jsonify(response)
+
+@app.route("/api/login", methods=['POST'])
+def handleLogin():
+    login_requests = request.get_json()
+    return_uuid = login(user_name=login_requests['user_name'],password=login_requests['password'])
+    if(return_uuid == None):
+        response = {
+            'code': 'Error',
+            'uuid': -1
+        }
+    else:
+        response = {
+            'code': 'OK',
+            'uuid': return_uuid
+        }
     return jsonify(response)
 
 if __name__ == "__main__":
