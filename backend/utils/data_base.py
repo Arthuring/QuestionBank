@@ -29,17 +29,20 @@ class db_wrap:
         except:
             print()
         cur.execute("CREATE TABLE TEMP AS SELECT * FROM QUESTION_TABLE")
+        cur.execute("DELETE FROM TEMP WHERE STATUS = ?",('READ_ONLY',))
         if(uploader != 'system'):
             cur.execute("DELETE FROM TEMP WHERE UPLOADER != ?",(uploader,))
         if(status != 'all'):
             cur.execute("DELETE FROM TEMP WHERE STATUS != ?",(status,))
+        cur.execute("SELECT * FROM TEMP")
+        print(cur.fetchall())
         cur.execute("SELECT count(*) FROM TEMP")
         result = cur.fetchone()
         try :
             cur.execute("DROP TABLE TEMP")
         except:
             print()
-        return result[0] - 1
+        return result[0]
 
     def insert_data(self,data:str,uploader = 'system',status = 'ready'): #prefix: data is string
         if(type(data) != str):
@@ -73,11 +76,12 @@ class db_wrap:
         except:
             print()
         cur.execute("CREATE TABLE TEMP AS SELECT * FROM QUESTION_TABLE")
+        cur.execute("DELETE FROM TEMP WHERE STATUS = ?",('READ_ONLY',))
         if(uploader != 'system'):
             cur.execute("DELETE FROM TEMP WHERE UPLOADER != ?",(uploader,))
         if(status != 'all'):
             cur.execute("DELETE FROM TEMP WHERE STATUS != ?",(status,))
-        cur.execute("SELECT * FROM TEMP LIMIT ? Offset ?", (num,index_begin + 1,))
+        cur.execute("SELECT * FROM TEMP LIMIT ? Offset ?", (num,index_begin,))
         data = cur.fetchall()
         try :
             cur.execute("DROP TABLE TEMP")
