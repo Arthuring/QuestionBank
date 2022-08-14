@@ -36,8 +36,23 @@ export default {
   },
   methods:{
     getUserHistory(){
-
-
+      fetch("http://127.0.0.1:5001/api/getUserRecord", {
+        method: "POST",
+        body: JSON.stringify({
+          "uuid": global.uuid
+        }),
+        headers: {
+          "Content-Type": "application/json"
+        },
+      }).then(res => res.json())
+        .catch(error => {
+          console.error('Error:', error)
+        })
+        .then((responseJson) => {
+          console.log(responseJson)
+          this.tableData = responseJson['data']
+        }
+        )
     },
   }
 

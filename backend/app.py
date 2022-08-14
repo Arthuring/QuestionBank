@@ -4,6 +4,7 @@
 @Note: Python大作业后端
 '''
 import hashlib
+from unittest import result
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from regex import S
@@ -285,7 +286,7 @@ def recordTestResult():
         'time' : datetime.date.today().strftime("%Y-%m-%d"),
         'wrong': wrong_cnt, 
         'total': correct_cnt + wrong_cnt,
-        'wrong_id' : wrong_list,
+        'wrongID' : wrong_list,
         'accuracy' : (wrong_cnt) / (correct_cnt + wrong_cnt)
     }
     #{time: y - m - d in string, wrong : int, total : int, wrong_id : list, accuracy : cal}
@@ -294,6 +295,18 @@ def recordTestResult():
     print(old_record)
     user_db.set_user_info(user_name,history=old_record)
     return jsonify({'code':'OK'})
+
+@app.route("/api/getUserRecord", methods=['POST'])
+def getUserRecord():
+    req = request.get_json()
+    user_name = get_user_name(req['uuid'])
+    print(req)
+    if(user_name == None):
+        print('Error user')
+        return jsonify({'code':'Not valid UUID'})
+    old_info = user_db.get_user_info(user_name)
+    print({'code':'OK','data':json.loads(old_info[3])})
+    return jsonify({'code':'OK','data':json.loads(old_info[3])})
 
 if __name__ == "__main__":
     # 开启服务
