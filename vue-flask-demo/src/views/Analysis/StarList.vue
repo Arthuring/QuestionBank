@@ -182,7 +182,7 @@ export default {
   name: "StarList",
   created() {
     this.getQuestion()
-    this.getQuestionNum(-1,'all')
+    this.getQuestionNum()
   },
   methods: {
     handleSizeChange(number) {
@@ -208,12 +208,10 @@ export default {
     },
 
     getQuestion() {
-      fetch("http://127.0.0.1:5001/api/getQuestionOrdered", {
+      fetch("http://127.0.0.1:5001/api/getFavour", {
         method: "POST",
         body: JSON.stringify({
-          "num": this.pageSize,
-          "offset": this.pageSize * (this.currentPage - 1),
-          "uuid": -1,
+          "uuid": global.uuid,
           "status": 'ready'
         }),
         headers: {
@@ -225,30 +223,12 @@ export default {
           })
           .then((responseJson) => {
                 console.log(responseJson)
-                this.tableData = responseJson['example_questions']
+                this.tableData = responseJson['questions']
               }
           )
     },
-    getQuestionNum(user, option) {
-      fetch("http://127.0.0.1:5001/api/getQuestionNum", {
-        method: "POST",
-        body: JSON.stringify({
-          "num": this.pageSize,
-          "uuid": user,
-          "status": option
-        }),
-        headers: {
-          "Content-Type": "application/json"
-        },
-      }).then(res => res.json())
-          .catch(error => {
-            console.error('Error:', error)
-          })
-          .then((responseJson) => {
-                console.log(responseJson)
-                this.totalPage = responseJson['num']
-              }
-          )
+    getQuestionNum() {
+      this.totalPage = this.tableData.length
     },
   }
 }

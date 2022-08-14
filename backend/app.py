@@ -396,6 +396,44 @@ def getUserRecord():
     old_info = user_db.get_user_info(user_name)
     return jsonify({'code':'OK','data':json.loads(old_info[3])})
 
+@app.route("/api/setFavour", methods=['POST'])
+def setUserFavour():
+    req = request.get_json()
+    user_name = get_user_name(req['uuid'])
+    if(user_name == None):
+        print('Error user')
+        return jsonify({'code':'Not valid UUID'})
+    old_info = user_db.get_user_info(user_name)
+    favor_list = json.loads(old_info[2])
+    if(req['id'] in favor_list):
+        favor_list.remove(req['id'])
+    else:
+        favor_list.append(req['id'])
+    return jsonify({'code' : 'OK'})
+
+@app.route("/api/getFavour", methods=['POST'])
+def getUserFavour():
+    req = request.get_json()
+    user_name = get_user_name(req['uuid'])
+    if(user_name == None):
+        print('Error user')
+        return jsonify({'code':'Not valid UUID'})
+    info = user_db.get_user_info(user_name)
+    favor_list = json.loads(old_info[2])
+    return_list = []
+    for id in favor_list:
+        return_list.append()
+        q = db.get_data_byid(int(id))
+        question = json.loads(q[1])
+        question['ID'] = id
+        # 依据前端是否需要答案，配置此项目
+        #  question.pop('ans')
+        return_list.append(question)
+    response = {
+        "questions": return_list,
+        "code": 'OK'
+    }
+
 if __name__ == "__main__":
     # 开启服务
     app.config['JSON_AS_ASCII'] = False
