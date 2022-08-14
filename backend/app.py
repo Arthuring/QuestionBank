@@ -242,9 +242,9 @@ def getQuestionRandom():
     ret = db.get_data_random(num, status=get_status, uploader=user_name)
     question_list = []
     for elem in ret:
+        id = elem[0]
         if(id in favor_list):
             question['stared'] = True
-        id = elem[0]
         question = json.loads(elem[1])
         question['ID'] = id
         # 依据前端是否需要答案，配置此项目
@@ -450,11 +450,44 @@ def getUserFavour():
         q = db.get_data_byid(int(id))
         question = json.loads(q[1])
         question['ID'] = id
+        question['stared'] = True
         # 依据前端是否需要答案，配置此项目
         #  question.pop('ans')
         return_list.append(question)
     response = {
         "questions": return_list,
+        "code": 'OK'
+    }
+    return jsonify(response)
+
+
+@app.route("/api/getWrong", methods=['POST'])
+def getUserWrong():
+    req = request.get_json()
+    user_name = get_user_name(req['uuid'])
+    if(user_name == None):
+        print('Error user')
+        return jsonify({'code':'Not valid UUID'})
+    info = user_db.get_user_info(user_name)
+    history_list = json.loads(info[3])
+    favor_list = json.loads(info[2])
+    wrong_set = {}
+    for his in history_list:
+        for wrong_his in his['wrongID']:
+            wrong_set[wrong_his] = his['time']
+    print(wrong_set)
+    ret_list = []
+    for id in wrong_set.keys():
+        q = db.get_data_byid(int(id))
+        question = json.loads(q[1])
+        question['ID'] = id
+        question['stared'] = id in favor_list
+        question['time']   = wrong_set[id]
+        # 依据前端是否需要答案，配置此项目
+        #  question.pop('ans')
+        ret_list.append(question)
+    response = {
+        "questions": ret_list,
         "code": 'OK'
     }
     return jsonify(response)
