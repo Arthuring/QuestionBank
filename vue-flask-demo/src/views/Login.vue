@@ -3,7 +3,7 @@
     <el-container style="flex-direction: column;">
       <el-header style="height: 170px">
         <div style="font-weight: bolder; color:#f8ffff;font-size: xxx-large; text-align: center; padding: 130px 0">
-          Welcome to Question Bank :)
+          Welcome to Question Bank :-)
         </div>
       </el-header>
       <el-main style="overflow: auto">
@@ -41,7 +41,7 @@
                 plain
                 style="margin-top: 50px"
                 @click="dialogVisibleSign=true"
-            >Sign in</el-button
+            >Sign up</el-button
             >
           </div>
         </div>

@@ -8,6 +8,7 @@ export default {
   uuid:-1,
   userName:'Unsigned',
   testTable:[],
+  recite: false,
 }
 </script>
 

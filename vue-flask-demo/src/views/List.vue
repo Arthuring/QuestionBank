@@ -30,11 +30,19 @@
           </el-table-column>
           <el-table-column fixed="right" label="Operations" width="fixed">
             <template #default="scope">
-              <el-button plain type="default" size="small" @click="handleDetail(scope.$index)" round>
-                <el-icon class="el-icon--left">
-                  <CirclePlus/>
+              <el-button plain type="default" size="small" @click="handleDetail(scope.$index)" circle>
+                <el-icon>
+                  <MoreFilled/>
                 </el-icon>
-                Detail
+
+              </el-button>
+              <el-button
+                  plain
+                  size="small"
+                  @click="handleStared(scope.$index)" circle color="#FFB90F"
+                  :icon="scope.row.stared === true ? 'StarFilled' : 'Star'"
+              >
+
               </el-button>
             </template>
           </el-table-column>
@@ -156,7 +164,27 @@ export default {
       currentPage: 1,
       pageSize: 15,
       totalPage: 100,//TODO: 通过后端获取问题总数
-      tableData: [],
+      tableData: [
+        {
+          ID: '123',
+          type: 'multiple choice',
+          uploader: 'Arthuring',
+          description: "下列正确的是 A：xxx B: xxx C: xxx D:xxx",
+          question: '下列正确的是',
+          ans: 'ABC',
+          stared: true,
+        },
+        {
+          ID: '456',
+          type: 'multiple choice',
+          uploader: 'Arthuring',
+          description: "下列正确的是 A：xxx B: xxx C: xxx D:xxx",
+          question: '下列正确的是',
+          ans: 'ABC',
+          stared: false,
+        },
+
+      ],
       formConfirmQuestion: {
         ID: '',
         type: ' ',
@@ -198,6 +226,9 @@ export default {
       this.formDetail.question = this.tableData[index].question
       this.formDetail.ans = this.tableData[index].ans
       this.formDetail.ID = this.tableData[index].ID
+    },
+    handleStared(index){
+      this.tableData[index].stared = !this.tableData[index].stared;
     },
 
     getQuestion() {

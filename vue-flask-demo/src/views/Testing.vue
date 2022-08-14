@@ -163,6 +163,13 @@
           <el-input v-model="formExercise.userAns"/>
         </el-form-item>
       </el-form>
+      <el-collapse v-model="activeNames" @change="handleChange">
+        <el-collapse-item title="Correct answer" name="1">
+          <div>
+            {{this.reciteMode ? this.formExercise.ans : 'Choose recite mode to see correct answer'}}
+          </div>
+        </el-collapse-item>
+      </el-collapse>
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="dialogVisibleExercise = false">Cancel</el-button>
@@ -226,6 +233,7 @@ export default {
         ans: ''
       },
       tableData: global.testTable,
+      reciteMode: global.recite
     }
   },
   methods: {

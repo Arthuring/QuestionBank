@@ -10,6 +10,7 @@ const routes = [
   {
     path: '/',
     name: 'home',
+    redirect:'/login',
     component: Login
   },
   {

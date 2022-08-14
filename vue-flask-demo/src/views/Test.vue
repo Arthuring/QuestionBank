@@ -51,16 +51,16 @@
         <div style="margin-top: 16px">
           <el-row justify="space-between" type="flex">
             <el-col :span="8">
-              <router-link to="/testing" style="text-decoration: none">
-                <el-button plain type="primary" size="default" @click="handleGoTest">
-                  Test Selected
-                  <el-icon>
-                    <ArrowRight/>
-                  </el-icon>
-                </el-button>
-              </router-link>
+              <el-switch
+                  v-model="reciteMode"
+                  class="mb-2"
+                  active-text="Recite"
+                  inactive-text="Test"
+                  size="default"
+              />
             </el-col>
             <el-col :span="8">
+
               <el-button type="primary" style="float: right;" size="default" @click="handleRandomTest">
                 Random Test
                 <el-icon>
@@ -77,6 +77,14 @@
                   style="float: right;"
                   size="default"
               />
+              <router-link to="/testing" style="text-decoration: none">
+                <el-button plain type="primary" size="default" @click="handleGoTest">
+                  Test Selected
+                  <el-icon>
+                    <ArrowRight/>
+                  </el-icon>
+                </el-button>
+              </router-link>
             </el-col>
           </el-row>
         </div>
@@ -190,6 +198,7 @@ export default {
       totalPage: 100,
       tableData: [],
       selected:[],
+      reciteMode:false,
       formConfirmQuestion: {
         type: ' ',
         detail: '',
@@ -239,6 +248,7 @@ export default {
     },
     handleGoTest(){
       global.testTable = this.selected
+      global.recite = this.reciteMode
     },
     handleRandomTest(){
       fetch("http://127.0.0.1:5001/api/getQuestionRandom", {
@@ -258,6 +268,7 @@ export default {
           .then((responseJson) => {
                 console.log(responseJson)
                 global.testTable= responseJson['example_questions']
+                global.recite = this.reciteMode
                 router.push('testing')
               }
           )
