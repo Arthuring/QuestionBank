@@ -7,12 +7,14 @@
         </div>
         <el-row justify="space-between" style="padding: 10px 0">
           <el-col :span="8">
-            <el-button type="primary" round size="large" @click="addQuestion">Upload Question
+            <el-button type="primary" round size="large" @click="addQuestion"
+                       :disabled="this.unLogged"
+            >Upload Question
               <el-icon class="el-icon--right" size="large">
                 <UploadFilled/>
               </el-icon>
             </el-button>
-            <el-button circle type="primary" size="large" @click="handleAdd">
+            <el-button circle type="primary" size="large" @click="handleAdd" :disabled="this.unLogged">
               <el-icon size="large">
                 <Plus/>
               </el-icon>
@@ -266,6 +268,7 @@ export default {
       dialogVisibleAdd:false,
       dialogVisibleEdit: false,
       dialogVisibleSuccess: false,
+      unLogged: global.uuid === -1,
       tableData: [
         // {
         //   ID: '777',
