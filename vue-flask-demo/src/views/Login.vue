@@ -39,9 +39,12 @@
             <el-button
                 :type="'primary'"
                 plain
-                style="margin-top: 50px"
+                style="margin-top: 50px; width: 100px"
+                size="default"
                 @click="dialogVisibleSign=true"
-            >Sign up</el-button
+            >Sign up
+              <el-icon class="el-icon--right" size="large"><Pointer /></el-icon>
+            </el-button
             >
           </div>
         </div>
@@ -49,14 +52,14 @@
       </el-main>
       <el-footer style="text-align: center">
 
-        <el-button size="large" plain type="primary" color="dodgerblue" @click="handleLogin">
+        <el-button size="large" plain type="primary" color="dodgerblue" @click="handleLogin" style="width: 100px">
           GO!
           <el-icon class="el-icon--right" size="large"><Promotion /></el-icon></el-button>
 
       </el-footer>
     </el-container>
 <!--    注册弹窗-->
-    <el-dialog v-model="dialogVisibleSign" title="Sign In" width="70%" :before-close="handleCloseEdit">
+    <el-dialog v-model="dialogVisibleSign" title="Sign Up" width="70%" :before-close="handleCloseEdit">
       <el-form
           ref="ruleFormRef"
           :model="formSignIn"
