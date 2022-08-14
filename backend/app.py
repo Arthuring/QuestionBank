@@ -36,7 +36,7 @@ retry_lut = {}
 # TODO
 # 副作用， 每一次check status, 登陆的用户都会刷新一下last seen time，保持在线。 前端可以通过定期发送一个包，来保证在浏览网页的人不会被退出登陆
 def check_status(uuid : str):
-    if(uuid not in login_lut.keys):
+    if(uuid not in login_lut.keys()):
         return False
     last_login_info = login_lut[uuid]
     last_time = int(last_login_info['last_see'])
@@ -264,6 +264,7 @@ def recordTestResult():
     table = req['table_data']
     print(req)
     if(user_name == None):
+        print('Error user')
         return jsonify({'code':'Not valid UUID'})
     old_info = user_db.get_user_info(user_name)
     correct_cnt = 0
@@ -276,7 +277,7 @@ def recordTestResult():
             wrong_cnt   += 1
             wrong_list.append(elem['ID'])
     new_record = {
-        'time' : datetime.date.today(),
+        'time' : datetime.date.today().strftime("%Y-%m-%d"),
         'wrong': wrong_cnt, 
         'total': correct_cnt + wrong_cnt,
         'wrong_id' : wrong_list,
@@ -287,6 +288,7 @@ def recordTestResult():
     old_record.append(new_record)
     print(old_record)
     user_db.set_user_info(user_name,history=old_record)
+    return jsonify({'code':'OK'})
 
 if __name__ == "__main__":
     # 开启服务

@@ -1,6 +1,7 @@
 import sqlite3
 import os.path
 import hashlib
+import json
 
 class user_db_wrap:
     sql_connection = 0
@@ -43,11 +44,11 @@ class user_db_wrap:
     def set_user_info(self,user_name,password = None,favour = None,history = None):
       cur = self.sql_connection.cursor()
       if(password != None):
-        cur.execute("UPDATE USER SET PASSWORD = ? WHERE USER_NAME = ?",password,user_name)
+        cur.execute("UPDATE USER SET PASSWORD = ? WHERE USER_NAME = ?",(password,user_name,))
       if(favour   != None):
-        cur.execute("UPDATE USER SET FAVOUR   = ? WHERE USER_NAME = ?",favour  ,user_name)
+        cur.execute("UPDATE USER SET FAVOUR   = ? WHERE USER_NAME = ?",(json.dumps(favour)  ,user_name,))
       if(history  != None):
-        cur.execute("UPDATE USER SET HISTORY  = ? WHERE USER_NAME = ?",history ,user_name)
+        cur.execute("UPDATE USER SET HISTORY  = ? WHERE USER_NAME = ?",(json.dumps(history) ,user_name,))
 
     def db_close(self):
       self.sql_connection.commit()
