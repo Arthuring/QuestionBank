@@ -287,7 +287,7 @@ def recordTestResult():
         'wrong': wrong_cnt, 
         'total': correct_cnt + wrong_cnt,
         'wrongID' : wrong_list,
-        'accuracy' : (wrong_cnt) / (correct_cnt + wrong_cnt)
+        'accuracy' : (correct_cnt) / (correct_cnt + wrong_cnt)
     }
     #{time: y - m - d in string, wrong : int, total : int, wrong_id : list, accuracy : cal}
     old_record = json.loads(old_info[3])
