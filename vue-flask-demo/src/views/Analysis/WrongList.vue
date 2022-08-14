@@ -42,7 +42,7 @@
               </el-button>
             </template>
           </el-table-column>
-          <el-table-column prop="wrongRate" label="wrongRate" sortable width="auto"/>
+          <el-table-column prop="time" label="wrongTime" sortable width="auto"/>
         </el-table>
       </el-main>
       <el-footer style="position: absolute; bottom: 0">
@@ -125,7 +125,7 @@
               <el-icon :style="iconStyle">
                 <Warning />
               </el-icon>
-              Wrong Rate
+              Wrong Time
             </div>
           </template>
           {{ this.formDetail.wrongRate }}

@@ -9,9 +9,9 @@
             @select="handleSelect"
             style="height: 50px"
         >
-          <el-menu-item index="1" @click="handleSelect('wrong')">Wrong Questions List</el-menu-item>
-          <el-menu-item index="2" @click="handleSelect('star')">Star Questions List</el-menu-item>
-          <el-menu-item index="3" @click="handleSelect('history')">Score Analysis</el-menu-item>
+          <el-menu-item index="1" @click="handleSelect('wrong')"><el-icon><Failed /></el-icon> Wrong Questions List</el-menu-item>
+          <el-menu-item index="2" @click="handleSelect('star')"><el-icon><Management /></el-icon>Star Questions List</el-menu-item>
+          <el-menu-item index="3" @click="handleSelect('history')"><el-icon><TrendCharts /></el-icon>Score Analysis</el-menu-item>
         </el-menu>
       </el-header>
       <el-main style="padding: 0">
