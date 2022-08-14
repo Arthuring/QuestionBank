@@ -8,7 +8,7 @@
           </el-col>
           <el-col :span="4"/>
           <el-col :span="12">
-            <search-bar/>
+<!--            <search-bar/>-->
           </el-col>
         </el-row>
       </el-header>
