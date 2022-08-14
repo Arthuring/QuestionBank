@@ -4,7 +4,7 @@
       <el-header height="20px">
         <el-row type="flex">
           <el-col :span="8" style="color: #409eff;font-weight: bolder; font-size: large">
-            All Questions List :)
+            Star Questions List ⭐
           </el-col>
           <el-col :span="4"/>
           <el-col :span="12">
@@ -28,20 +28,12 @@
               </el-tag>
             </template>
           </el-table-column>
-          <el-table-column fixed="right" label="Operations" width="fixed">
+          <el-table-column fixed="right" label="Detail" width="fixed">
             <template #default="scope">
               <el-button plain type="default" size="small" @click="handleDetail(scope.$index)" circle>
                 <el-icon>
                   <MoreFilled/>
                 </el-icon>
-
-              </el-button>
-              <el-button
-                  plain
-                  size="small"
-                  @click="handleStared(scope.$index)" circle color="#FFB90F"
-                  :icon="scope.row.stared === true ? 'StarFilled' : 'Star'"
-              >
 
               </el-button>
             </template>
@@ -124,17 +116,6 @@
           </template>
           {{ this.formDetail.ans }}
         </el-descriptions-item>
-        <el-descriptions-item>
-          <template #label>
-            <div class="cell-item">
-              <el-icon :style="iconStyle">
-                <Warning />
-              </el-icon>
-              Wrong Rate
-            </div>
-          </template>
-          {{ this.formDetail.wrongRate }}
-        </el-descriptions-item>
       </el-descriptions>
     </el-dialog>
   </div>
@@ -196,29 +177,12 @@ export default {
         },
 
       ],
-      formConfirmQuestion: {
-        ID: '',
-        type: ' ',
-        detail: '',
-        question: ' ',
-        ansFilling: '',
-        ansMulti: '',
-        ansSingle: '',
-      },
-      formDetail: {
-        ID: '',
-        type: 'multiple choice',
-        uploader: 'Arthuring',
-        description: "下列正确的是 A：xxx B: xxx C: xxx D:xxx",
-        question: '下列正确的是',
-        ans: 'ABC',
-      }
     }
   },
-  name: "List",
+  name: "StarList",
   created() {
     this.getQuestion()
-    this.getQuestionNum(-1,'ready')
+    this.getQuestionNum(-1,'all')
   },
   methods: {
     handleSizeChange(number) {

@@ -6,6 +6,8 @@ import Analysis from "@/views/Analysis";
 import Login from "@/views/Login.vue"
 import Testing from "@/views/Testing";
 import HistoryScore from "@/views/Analysis/HistoryScore";
+import WrongList from "@/views/Analysis/WrongList";
+import StarList from "@/views/Analysis/StarList";
 
 const routes = [
     {
@@ -45,11 +47,13 @@ const routes = [
             },
             {
                 path: 'star',
-                name: 'star'
+                name: 'star',
+                component: StarList,
             },
             {
                 path: 'wrong',
                 name:'wrong',
+                component: WrongList,
             },
             {
                 path: '',
