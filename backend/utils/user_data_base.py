@@ -17,6 +17,9 @@ class user_db_wrap:
         else:
             self.sql_connection = sqlite3.connect(database_name)
 
+    def __del__(self):
+        self.db_close()
+
     def get_user_info(self,user_name = 'system'):
       cur = self.sql_connection.cursor()
       cur.execute("SELECT * FROM USER WHERE USER_NAME == ?",(user_name,))
@@ -48,3 +51,7 @@ class user_db_wrap:
         cur.execute("UPDATE USER SET FAVOUR   = ? WHERE USER_NAME = ?",favour,user_name)
       if(wrong != None):
         cur.execute("UPDATE USER SET WRONG    = ? WHERE USER_NAME = ?",favour,user_name)
+
+    def db_close(self):
+      self.sql_connection.commit()
+      self.sql_connection.close()

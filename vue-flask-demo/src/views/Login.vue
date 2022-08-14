@@ -12,7 +12,7 @@
           Login
         </div>
 
-        <div style="width:100%; float:left; text-align: center" >
+        <div style="width:100%; float:left; text-align: center">
 
           <div class="mt-4" style="width:100%; text-align:center; float:left; ">
             <el-input v-model="inputUsername" placeholder="Please input username" style="width: 500px">
@@ -28,24 +28,21 @@
         </div>
 
         <div style="width:100%; float:left">
-<!--          <div style="height:30px;width:300px;float:left;"></div>-->
+          <!--          <div style="height:30px;width:300px;float:left;"></div>-->
           <div class="mt-4" style="width:100%; text-align:center; ">
-            <el-input v-model="inputPassword" style="width: 500px" type="password" placeholder="please input password" show-password>
+            <el-input v-model="inputPassword" style="width: 500px" type="password" placeholder="please input password"
+              show-password>
               <template #prepend>password</template>
             </el-input>
 
           </div>
           <div class="mt-4" style="width:100%; text-align:center; ">
-            <el-button
-                :type="'primary'"
-                plain
-                style="margin-top: 50px; width: 100px"
-                size="default"
-                @click="dialogVisibleSign=true"
-            >Sign up
-              <el-icon class="el-icon--right" size="large"><Pointer /></el-icon>
-            </el-button
-            >
+            <el-button :type="'primary'" plain style="margin-top: 50px; width: 100px" size="default"
+              @click="dialogVisibleSign = true">Sign up
+              <el-icon class="el-icon--right" size="large">
+                <Pointer />
+              </el-icon>
+            </el-button>
           </div>
         </div>
 
@@ -54,19 +51,16 @@
 
         <el-button size="large" plain type="primary" color="dodgerblue" @click="handleLogin" style="width: 100px">
           GO!
-          <el-icon class="el-icon--right" size="large"><Promotion /></el-icon></el-button>
+          <el-icon class="el-icon--right" size="large">
+            <Promotion />
+          </el-icon>
+        </el-button>
 
       </el-footer>
     </el-container>
-<!--    注册弹窗-->
+    <!--    注册弹窗-->
     <el-dialog v-model="dialogVisibleSign" title="Sign Up" width="70%" :before-close="handleCloseEdit">
-      <el-form
-          ref="ruleFormRef"
-          :model="formSignIn"
-          status-icon
-          label-width="120px"
-          class="demo-ruleForm"
-      >
+      <el-form ref="ruleFormRef" :model="formSignIn" status-icon label-width="120px" class="demo-ruleForm">
         <el-form-item label="Username" prop="username">
           <el-input v-model.number="formSignIn.userName" />
         </el-form-item>
@@ -74,17 +68,14 @@
           <el-input v-model="formSignIn.password" type="password" autocomplete="off" />
         </el-form-item>
         <el-form-item label="Confirm" prop="checkPassword">
-          <el-input
-              v-model="formSignIn.checkPassword"
-              type="password"
-              autocomplete="off"
-          />
+          <el-input v-model="formSignIn.checkPassword" type="password" autocomplete="off" />
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" @click="submitForm()"
-          >Submit <el-icon class="el-icon--right" size="large"><Promotion /></el-icon></el-button
-          >
+          <el-button type="primary" @click="submitForm()">Submit <el-icon class="el-icon--right" size="large">
+              <Promotion />
+            </el-icon>
+          </el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -92,7 +83,7 @@
 </template>
 
 <script>
-import {ElMessage} from "element-plus";
+import { ElMessage } from "element-plus";
 import global from "@/components/Global";
 import router from "@/router";
 import aside from "@/components/Aside";
@@ -115,75 +106,103 @@ export default {
       },
       inputUsername: '',
       inputPassword: '',
-      dialogVisibleSign:false,
-      formSignIn:{
+      dialogVisibleSign: false,
+      formSignIn: {
         userName: '',
-        password:'',
-        checkPassword:'',
+        password: '',
+        checkPassword: '',
       }
     }
   },
 
-  methods:{
-    submitForm(){
+  methods: {
+    submitForm() {
       let valid = true
-      if(this.formSignIn.userName === ''){
+      if (this.formSignIn.userName === '') {
         valid = false;
         ElMessage.error('Username can not be empty')
       }
-      if(this.formSignIn.password === ''){
+      if (this.formSignIn.password === '') {
         valid = false;
         ElMessage.error('Password can not be empty')
       }
-      if(this.formSignIn.userName === ''){
+      if (this.formSignIn.userName === '') {
         valid = false;
         ElMessage.error('Please check your password')
       }
-      if(!(this.formSignIn.password === this.formSignIn.checkPassword)){
+      if (!(this.formSignIn.password === this.formSignIn.checkPassword)) {
         valid = false;
         ElMessage.error('Please input check same with password')
       }
-      if(valid){
+      if (valid) {
         this.dialogVisibleSign = false
         // TODO:上传用户信息到后端
         fetch("http://127.0.0.1:5001/api/registration", {
+          method: "POST",
+          body: JSON.stringify({
+            "user_name": this.formSignIn.userName,
+            "password": this.formSignIn.password
+          }),
+          headers: {
+            "Content-Type": "application/json"
+          },
+        }).then(res => res.json())
+          .catch(error => {
+            console.error('Error:', error)
+          })
+          .then((responseJson) => {
+            console.log(responseJson)
+            if (responseJson['code'] == 'OK') {
+              ElMessage.success('Signed In succeeded')
+            } else {
+              ElMessage.error(responseJson['code'])
+            }
+          }
+          )
+      }
+    },
+    handleLogin() {
+      // if(this.inputUsername === 'admin' && this.inputPassword === '123456'){
+
+      //   global.uuid = 0
+      //   global.userName = 'admin'
+      //   // app.components.Aside.data().logged = true
+      //   // app.components.Aside.data().visibleLogged = true
+      //   this.$emit('login')
+      //   router.push('upload')
+      // }else{
+      //   this.inputUsername = ''
+      //   this.inputPassword = ''
+      //   ElMessage.error('Username or password wrong')
+      // }
+      fetch("http://127.0.0.1:5001/api/login", {
         method: "POST",
         body: JSON.stringify({
-          "user_name": this.formSignIn.userName,
-          "password": this.formSignIn.password
+          "user_name": this.inputUsername,
+          "password": this.inputPassword
         }),
         headers: {
           "Content-Type": "application/json"
         },
       }).then(res => res.json())
-          .catch(error => {
-            console.error('Error:', error)
-          })
-          .then((responseJson) => {
-                console.log(responseJson)
-                if(responseJson['code'] == 'OK') {
-                  ElMessage.success('Signed In succeeded')
-                } else {
-                  ElMessage.error(responseJson['code'])
-                }
-              }
-          )
-      }
-    },
-    handleLogin(){
-      if(this.inputUsername === 'admin' && this.inputPassword === '123456'){
-
-        global.uuid = 0
-        global.userName = 'admin'
-        // app.components.Aside.data().logged = true
-        // app.components.Aside.data().visibleLogged = true
-        this.$emit('login')
-        router.push('upload')
-      }else{
-        this.inputUsername = ''
-        this.inputPassword = ''
-        ElMessage.error('Username or password wrong')
-      }
+        .catch(error => {
+          console.error('Error:', error)
+        })
+        .then((responseJson) => {
+          console.log(responseJson)
+          if (responseJson['code'] == 'OK') {
+            ElMessage.success('Signed In succeeded')
+            global.uuid = responseJson['uuid']
+            global.userName = this.inputUsername
+            this.$emit('login')
+            router.push('upload')
+          } else {
+            this.inputUsername = ''
+            this.inputPassword = ''
+            ElMessage.error(responseJson['code'])
+          }
+        }
+        )
     }
   }
 }

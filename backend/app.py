@@ -61,17 +61,19 @@ def login_wrong(user_name):
 # TODO
 # 副作用， 已经登陆的用户再一次登陆时，会更新token，使旧Token失效
 def login(user_name : str,password : str):
-    user_info = user_db.get_user_info(user_name=user_name)
+    user_info = user_db.get_user_info(user_name)
     if(user_name in retry_lut):
         if(retry_lut[user_info]['retry_times'] >= max_login_retry_pre_day and (time.time() - retry_lut[user_info]['last_retry_time']) < 24 * 60 * 60):
             retry_lut[user_info]['last_retry_time'] = time.time()
-            return False
+            return {'code':'Max retry_time limit !'}
     if(user_info == None):
         login_wrong(user_name)
-        return False
+        print('NO USER FOUND')
+        return {'code':'Wrong username or password !'}
     if(password != str(user_info[1])):
+        print('ERROR PASSWD' + password + ' | ' + str(user_info[1]))
         login_wrong(user_name)
-        return False
+        return {'code':'Wrong username or password !'}
     user_token_open = user_name + str(time.time()) + password + str('tHiS Is S@lt') + str(len(login_lut))
     user_token = hashlib.sha256(user_token_open.encode('utf-8')).hexdigest()
     login_lut[user_token] = {'user_name':user_name,'last_see':time.time()}
@@ -226,10 +228,11 @@ def handleSubmit():
 @app.route("/api/login", methods=['POST'])
 def handleLogin():
     login_requests = request.get_json()
+    print(login_requests)
     return_uuid = login(user_name=login_requests['user_name'],password=login_requests['password'])
-    if(return_uuid == None):
+    if(type(return_uuid) == dict):
         response = {
-            'code': 'Error',
+            'code': return_uuid['code'],
             'uuid': -1
         }
     else:
@@ -237,6 +240,7 @@ def handleLogin():
             'code': 'OK',
             'uuid': return_uuid
         }
+    print(response)
     return jsonify(response)
 
 @app.route("/api/registration", methods=['POST'])
