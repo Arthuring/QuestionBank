@@ -239,6 +239,16 @@ def handleLogin():
         }
     return jsonify(response)
 
+@app.route("/api/registration", methods=['POST'])
+def handleRegistration():
+    reg_requests = request.get_json()
+    user_name = reg_requests['user_name']
+    password  = reg_requests['password']
+    info = user_db.register_user(user_name,password)
+    return jsonify({'code':info})
+    #备注，只有返回OK才可以完成注册，否之返回Code即为错误原因
+
+
 if __name__ == "__main__":
     # 开启服务
     app.config['JSON_AS_ASCII'] = False
