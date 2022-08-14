@@ -199,7 +199,7 @@ export default {
       dialogVisibleDetail: false,
       currentPage: 1,
       pageSize: 15,
-      totalPage: 100,
+      totalPage: 0,
       tableData: [],
       selected:[],
       reciteMode:false,
