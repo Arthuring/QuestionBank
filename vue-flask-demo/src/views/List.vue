@@ -207,7 +207,7 @@ export default {
   name: "List",
   created() {
     this.getQuestion()
-    this.getQuestionNum(-1,'all')
+    this.getQuestionNum(-1,'ready')
   },
   methods: {
     handleSizeChange(number) {
