@@ -6,6 +6,7 @@
 from urllib import response
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from more_itertools import last
 from utils.data_base import db_wrap
 import json
 import uuid
@@ -13,10 +14,39 @@ import os
 from ocr import img2String
 from question_parser import get_parsered_question
 
+import time
+from
+
 app = Flask(__name__)
 CORS(app)
 app.config.from_object(__name__)
 db  = db_wrap("my_question.db")
+
+max_login_retry_pre_day = 3
+max_login_time          = 2 * 60 * 60 # hour
+# {uuid:{user_name:'str',last_see:'time'}}
+login_lut = {}
+
+# {user_name:{retry_times:'times',last_retry_dat:'day'}}
+retry_lut = {}
+
+# TODO
+def check_status(uuid : str):
+    if(uuid not in login_lut.keys):
+        return False
+    last_login_info = login_lut[uuid]
+    last_time = int(last_login_info['last_see']);
+    now_time = int(time.time())
+    if(now_time - last_time > max_login_time):
+        login_lut.pop(uuid)
+        return False
+    last_login_info['last_see'] = now_time
+    login_lut[uuid] = last_login_info
+    return True
+
+# TODO
+def login(user_name : str,password : str):
+
 
 # 获取题目的总数
 @app.route("/api/getQuestionNum", methods=['POST'])

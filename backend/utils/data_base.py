@@ -2,15 +2,13 @@ import sqlite3
 import os.path
 import json
 
-from sympy import false
-
 class db_wrap:
     
     sql_connection = 0
     id_seq = -1
 
     def __init__(self,database_name = "/home/dofingert/Source/Python_project/my_question.db"):
-        if(os.path.isfile(database_name) == false):
+        if(os.path.isfile(database_name) == False):
             self.sql_connection = sqlite3.connect(database_name)
             data_base_cur = self.sql_connection.cursor()
             data_base_cur.execute("CREATE TABLE QUESTION_TABLE(ID INT KEY NOT NULL, QUESTION_JSON TEXT NOT NULL, UPLOADER TEXT NOT NULL, STATUS TEXT NOT NULL)")
