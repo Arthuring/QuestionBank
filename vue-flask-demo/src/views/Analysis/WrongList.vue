@@ -4,7 +4,7 @@
       <el-header height="20px">
         <el-row type="flex">
           <el-col :span="8" style="color: #409eff;font-weight: bolder; font-size: large">
-            All Questions List :)
+            Wrong Questions List :(
           </el-col>
           <el-col :span="4"/>
           <el-col :span="12">
@@ -28,27 +28,16 @@
               </el-tag>
             </template>
           </el-table-column>
-          <el-table-column fixed="right" label="Operations" width="fixed"
-                           :filters="[
-        { text: 'stared', value: true },]"
-          :filter-method="filterStar">
+          <el-table-column fixed="right" label="Detail" width="fixed">
             <template #default="scope">
               <el-button plain type="default" size="small" @click="handleDetail(scope.$index)" circle>
                 <el-icon>
                   <MoreFilled/>
                 </el-icon>
-
-              </el-button>
-              <el-button
-                  plain
-                  size="small"
-                  @click="handleStared(scope.$index)" circle color="#FFB90F"
-                  :icon="scope.row.stared === true ? 'StarFilled' : 'Star'"
-              >
-
               </el-button>
             </template>
           </el-table-column>
+          <el-table-column prop="wrongRate" label="wrongRate" sortable width="auto"/>
         </el-table>
       </el-main>
       <el-footer style="position: absolute; bottom: 0">
@@ -77,9 +66,7 @@
               ID
             </div>
           </template>
-
             {{ this.formDetail.ID }}
-
         </el-descriptions-item>
         <el-descriptions-item>
           <template #label>
@@ -157,9 +144,6 @@ export default {
     const filterTag = (value, row) => {
       return row.type === value
     };
-    const filterStar = (value, row) => {
-      return row.stared === value
-    }
     const filterHandler = (
         value,
         row,
@@ -171,8 +155,7 @@ export default {
     return {
       formatter,
       filterTag,
-      filterHandler,
-      filterStar
+      filterHandler
     }
 
   },
@@ -191,6 +174,7 @@ export default {
           question: '下列正确的是',
           ans: 'ABC',
           stared: true,
+          wrongRate: 0.4,
         },
         {
           ID: '456',
@@ -200,6 +184,7 @@ export default {
           question: '下列正确的是',
           ans: 'ABC',
           stared: false,
+          wrongRate: 0.2,
         },
 
       ],
@@ -219,10 +204,11 @@ export default {
         description: "下列正确的是 A：xxx B: xxx C: xxx D:xxx",
         question: '下列正确的是',
         ans: 'ABC',
+        wrongRate: 0.333,
       }
     }
   },
-  name: "List",
+  name: "WrongList",
   created() {
     this.getQuestion()
     this.getQuestionNum(-1,'ready')
