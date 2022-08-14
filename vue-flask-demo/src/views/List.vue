@@ -28,7 +28,10 @@
               </el-tag>
             </template>
           </el-table-column>
-          <el-table-column fixed="right" label="Operations" width="fixed">
+          <el-table-column fixed="right" label="Operations" width="fixed"
+                           :filters="[
+        { text: 'stared', value: true },]"
+          :filter-method="filterStar">
             <template #default="scope">
               <el-button plain type="default" size="small" @click="handleDetail(scope.$index)" circle>
                 <el-icon>
@@ -143,6 +146,9 @@ export default {
     const filterTag = (value, row) => {
       return row.type === value
     };
+    const filterStar = (value, row) => {
+      return row.stared === value
+    }
     const filterHandler = (
         value,
         row,
@@ -154,7 +160,8 @@ export default {
     return {
       formatter,
       filterTag,
-      filterHandler
+      filterHandler,
+      filterStar
     }
 
   },

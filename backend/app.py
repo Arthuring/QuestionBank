@@ -7,7 +7,6 @@ import hashlib
 from unittest import result
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from regex import S
 from utils.data_base import db_wrap
 from utils.user_data_base import user_db_wrap
 import json

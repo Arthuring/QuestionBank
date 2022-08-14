@@ -74,12 +74,12 @@ const routes = [
     {
         path: '/star',
         redirect: '/analysis/star',
-        component: HistoryScore,
+        //component: ,
     },
     {
         path: '/wrong',
         redirect: '/analysis/wrong',
-        component: HistoryScore,
+        //component: HistoryScore,
     }
 
 ]
