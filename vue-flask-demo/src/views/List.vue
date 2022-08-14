@@ -144,6 +144,7 @@
 </template>
 
 <script>
+import global from "@/components/Global";
 import SearchBar from "@/components/SearchBar";
 
 export default {
@@ -248,6 +249,23 @@ export default {
     },
     handleStared(index){
       this.tableData[index].stared = !this.tableData[index].stared;
+      fetch("http://127.0.0.1:5001/api/setFavour", {
+        method: "POST",
+        body: JSON.stringify({
+          "id": index,
+          "uuid": global.uuid
+        }),
+        headers: {
+          "Content-Type": "application/json"
+        },
+      }).then(res => res.json())
+          .catch(error => {
+            console.error('Error:', error)
+          })
+          .then((responseJson) => {
+                console.log(responseJson)
+              }
+          )
     },
 
     getQuestion() {
@@ -257,6 +275,7 @@ export default {
           "num": this.pageSize,
           "offset": this.pageSize * (this.currentPage - 1),
           "uuid": -1,
+          "luuid": global.uuid,
           "status": 'ready'
         }),
         headers: {

@@ -182,17 +182,35 @@ def getQuestionOrdered():
         user_name = 'system'
     if(user_name == None and uploader_uid != -1):
         return jsonify({'code': 'ERROR IN UUID'})
+    user_info = user_db.get_user_info(user_name)
+    if(user_info != None):
+        favor_list = json.loads(user_info[2])
+    else:
+        favor_list = []
     get_status = data['status']  # 如果状态为'temp',则获取等待提交的题目， 如果状态为'all', 则获取已经提交的题目
     # 数量，从前端请求中获取
     num = int(data['num'])
     # 开始的索引
     offset = int(data['offset'])
     ret = db.get_data_range(offset, num, status=get_status,uploader=user_name)
+    if('luuid' in data):
+        user_name = get_user_name(data['luuid'])
+        if(user_name == None):
+            return jsonify({'code': 'ERROR IN UUID'})
+        user_info = user_db.get_user_info(user_name)
+        if(user_info != None):
+            favor_list = json.loads(user_info[2])
+        else:
+            favor_list = []
     question_list = []
     for elem in ret:
         id = elem[0]
         question = json.loads(elem[1])
         question['ID'] = id
+        if(id in favor_list):
+            question['stared'] = True
+        else:
+            question['stared'] = False
         # if(question['type'] != 'filling'):
         #     question['description'] = question['question'] + '\n' + ' '.join([elem + question['choice'][elem] for elem in question['choice']])
         # else:
@@ -216,12 +234,16 @@ def getQuestionRandom():
         user_name = 'system'
     if(user_name == None and uploader_uid != -1):
         return jsonify({'code': 'ERROR IN UUID'})
+    user_info = user_db.get_user_info(user_name)
+    favor_list = json.loads(user_info[2])
     get_status = data['status']  # 如果状态为'temp',则获取等待提交的题目， 如果状态为'all', 则获取已经提交的题目
     # 数量，从前端请求中获取
     num = int(data['num'])
     ret = db.get_data_random(num, status=get_status, uploader=user_name)
     question_list = []
     for elem in ret:
+        if(id in favor_list):
+            question['stared'] = True
         id = elem[0]
         question = json.loads(elem[1])
         question['ID'] = id
@@ -399,6 +421,7 @@ def getUserRecord():
 @app.route("/api/setFavour", methods=['POST'])
 def setUserFavour():
     req = request.get_json()
+    print(req)
     user_name = get_user_name(req['uuid'])
     if(user_name == None):
         print('Error user')
@@ -409,6 +432,8 @@ def setUserFavour():
         favor_list.remove(req['id'])
     else:
         favor_list.append(req['id'])
+    print(favor_list)
+    user_db.set_user_info(user_name=user_name,favour=favor_list)
     return jsonify({'code' : 'OK'})
 
 @app.route("/api/getFavour", methods=['POST'])
@@ -419,10 +444,9 @@ def getUserFavour():
         print('Error user')
         return jsonify({'code':'Not valid UUID'})
     info = user_db.get_user_info(user_name)
-    favor_list = json.loads(old_info[2])
+    favor_list = json.loads(info[2])
     return_list = []
     for id in favor_list:
-        return_list.append()
         q = db.get_data_byid(int(id))
         question = json.loads(q[1])
         question['ID'] = id
@@ -433,6 +457,7 @@ def getUserFavour():
         "questions": return_list,
         "code": 'OK'
     }
+    return jsonify(response)
 
 if __name__ == "__main__":
     # 开启服务
