@@ -57,11 +57,22 @@
                   active-text="Recite"
                   inactive-text="Test"
                   size="default"
+                  :disabled="this.unlogged"
               />
             </el-col>
-            <el-col :span="8">
-
-              <el-button type="primary" style="float: right;" size="default" @click="handleRandomTest">
+            <el-col :span="16">
+              <router-link to="/testing" style="text-decoration: none">
+                <el-button plain type="primary" size="default" @click="handleGoTest"
+                           style="float: right;margin-left: 2px"
+                :disabled="this.unlogged">
+                  Test Selected
+                  <el-icon>
+                    <ArrowRight/>
+                  </el-icon>
+                </el-button>
+              </router-link>
+              <el-button type="primary" style="float: right;" size="default" @click="handleRandomTest"
+                         :disabled="this.unlogged">
                 Random Test
                 <el-icon>
                   <DArrowRight/>
@@ -77,14 +88,7 @@
                   style="float: right;"
                   size="default"
               />
-              <router-link to="/testing" style="text-decoration: none">
-                <el-button plain type="primary" size="default" @click="handleGoTest">
-                  Test Selected
-                  <el-icon>
-                    <ArrowRight/>
-                  </el-icon>
-                </el-button>
-              </router-link>
+
             </el-col>
           </el-row>
         </div>
@@ -199,6 +203,7 @@ export default {
       tableData: [],
       selected:[],
       reciteMode:false,
+      unlogged:global.uuid === -1,
       formConfirmQuestion: {
         type: ' ',
         detail: '',

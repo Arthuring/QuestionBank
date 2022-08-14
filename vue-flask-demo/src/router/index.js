@@ -5,6 +5,7 @@ import Test from '../views/Test.vue'
 import Analysis from "@/views/Analysis";
 import Login from "@/views/Login.vue"
 import Testing from "@/views/Testing";
+import HistoryScore from "@/views/HistoryScore";
 
 const routes = [
   {
@@ -46,6 +47,11 @@ const routes = [
     path: '/testing',
     name:'testing',
     component: Testing
+  },
+  {
+    path: '/analysis/history',
+    name:'history',
+    component: HistoryScore
   }
 ]
 
