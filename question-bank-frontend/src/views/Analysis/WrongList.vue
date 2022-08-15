@@ -121,7 +121,7 @@
               Wrong Time
             </div>
           </template>
-          {{ this.formDetail.wrongRate }}
+          {{ this.formDetail.time }}
         </el-descriptions-item>
       </el-descriptions>
     </el-dialog>
@@ -203,7 +203,7 @@ export default {
         description: "下列正确的是 A：xxx B: xxx C: xxx D:xxx",
         question: '下列正确的是',
         ans: 'ABC',
-        wrongRate: 0.333,
+        time: 0.333,
       }
     }
   },
@@ -229,7 +229,7 @@ export default {
       this.formDetail.question = this.tableData[index].question
       this.formDetail.ans = this.tableData[index].ans
       this.formDetail.ID = this.tableData[index].ID
-      this.formDetail.wrongRate = this.tableData[index].wrongRate
+      this.formDetail.time = this.tableData[index].time
     },
     handleStared(index) {
       this.tableData[index].stared = !this.tableData[index].stared;
