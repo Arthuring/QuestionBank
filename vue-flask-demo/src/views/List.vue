@@ -127,17 +127,17 @@
           </template>
           {{ this.formDetail.ans }}
         </el-descriptions-item>
-        <el-descriptions-item>
-          <template #label>
-            <div class="cell-item">
-              <el-icon :style="iconStyle">
-                <Warning />
-              </el-icon>
-              Wrong Rate
-            </div>
-          </template>
-          {{ this.formDetail.wrongRate }}
-        </el-descriptions-item>
+<!--        <el-descriptions-item>-->
+<!--          <template #label>-->
+<!--            <div class="cell-item">-->
+<!--              <el-icon :style="iconStyle">-->
+<!--                <Warning />-->
+<!--              </el-icon>-->
+<!--              Wrong Rate-->
+<!--            </div>-->
+<!--          </template>-->
+<!--          {{ this.formDetail.wrongRate }}-->
+<!--        </el-descriptions-item>-->
       </el-descriptions>
     </el-dialog>
   </div>
