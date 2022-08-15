@@ -235,8 +235,8 @@ def getQuestionRandom():
         user_name = 'system'
     if(user_name == None and uploader_uid != -1):
         return jsonify({'code': 'ERROR IN UUID'})
-    user_info = user_db.get_user_info(user_name)
-    favor_list = json.loads(user_info[2])
+    # user_info = user_db.get_user_info(user_name)
+    # favor_list = json.loads(user_info[2])
     get_status = data['status']  # 如果状态为'temp',则获取等待提交的题目， 如果状态为'all', 则获取已经提交的题目
     # 数量，从前端请求中获取
     num = int(data['num'])
@@ -244,8 +244,8 @@ def getQuestionRandom():
     question_list = []
     for elem in ret:
         id = elem[0]
-        if(id in favor_list):
-            question['stared'] = True
+        # if(id in favor_list):
+        #     question['stared'] = True
         question = json.loads(elem[1])
         question['uploader'] = elem[2]
         question['ID'] = id
@@ -267,8 +267,12 @@ def random_filename(filename):
 @app.route("/api/addQuestion", methods=['POST'])
 def addQuestion():
     data = request.get_json()
+    uuid = data['uuid']
+    user_name = get_user_name(uuid)
+    if(user_name == None):
+        return jsonify({'code':'Wrong UUID'})
     question_json = data['question_info']
-    db.insert_data(question_json, status='temp')
+    db.insert_data(question_json, status='temp',uploader=user_name)
     response = {
         'code': 'OK'
     }

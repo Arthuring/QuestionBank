@@ -322,7 +322,7 @@ export default {
             'type': this.formConfirmQuestion.type,
             'ans': this.formConfirmQuestion.ans,
           },
-          "uuid": -1,
+          "uuid": global.uuid,
         }),
         headers: {
           "Content-Type": "application/json"
