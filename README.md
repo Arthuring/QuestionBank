@@ -1,4 +1,6 @@
-# vue-flask-demo
+
+
+# question-bank-frontend
 
 ## Project setup
 ```
@@ -17,3 +19,7 @@ npm run build
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+# backend
+
+所需依赖在requirements.txt中
